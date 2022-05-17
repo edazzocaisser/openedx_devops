@@ -13,7 +13,7 @@
 #        IV.  Merge all of the configuration data into Tutor's Open edX configuration files
 #        V.   Deploy Open edX into the Kubernetes cluster
 #------------------------------------------------------------------------------
-name: live Deploy to Kubernetes
+name: dev Deploy to Kubernetes
 
 on: [workflow_dispatch]
 
@@ -21,7 +21,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      ENVIRONMENT_ID: live
+      ENVIRONMENT_ID: dev
       NAMESPACE: openedx
       OPENEDX_COMMON_VERSION: open-release/maple.3
       COMMON_LOGO_URL: https://www.edx.org/images/logos/edx-logo-elm.svg
@@ -54,7 +54,7 @@ jobs:
       - name: Get Kube config
         run: |-
           sudo snap install kubectl --channel=1.23/stable --classic
-          aws eks --region us-east-2 update-kubeconfig --name live-mrionline-usa --alias eks-live
+          aws eks --region us-east-2 update-kubeconfig --name dev-mrionline-usa --alias eks-dev
 
       # dump version information for aws cli and kubectl to the console
       - name: Check environments versions
@@ -171,7 +171,7 @@ jobs:
           cat ci/tutor-deploy/environments/$ENVIRONMENT_ID/config.yml >> $GITHUB_ENV
 
       # note that values like $LMS_HOSTNAME come from this repo
-      # in /ci/tutor-deploy/environments/live/config.yml
+      # in /ci/tutor-deploy/environments/dev/config.yml
       - name: Load additional environment specific settings  (computed)
         run: |-
           # We don't want to run these services as we are using the Kubernetes ingress instead.
@@ -184,7 +184,7 @@ jobs:
           echo "TUTOR_RUN_NGINX=false" >> $GITHUB_ENV
 
       # note that the Kubernetes additional config data is locally
-      # stored in ci/tutor-deploy/environments/live/k8s/
+      # stored in ci/tutor-deploy/environments/dev/k8s/
       # in Kubernetes manifest yaml format
       - name: Create Kubernetes add-on resources
         run:  |-
@@ -196,7 +196,7 @@ jobs:
       #        example values:
       #          OPENEDX_AWS_ACCESS_KEY: ABDCE123456789OHBBGQ
       #          OPENEDX_AWS_SECRET_ACCESS_KEY: A123456789srJ8lgel+ABCDEFGHIJKabcdefghijk
-      #          S3_STORAGE_BUCKET: live-mrionline-usa-storage
+      #          S3_STORAGE_BUCKET: dev-mrionline-usa-storage
       #          S3_CUSTOM_DOMAIN: cdn.dev.mrionline.com
       #          S3_REGION: us-east-2
       #
@@ -214,7 +214,7 @@ jobs:
       #                      "s3:GetObject*",
       #                      "s3:List*"
       #                  ],
-      #                  "Resource": "arn:aws:s3:::live-mrionline-usa-storage/*"
+      #                  "Resource": "arn:aws:s3:::dev-mrionline-usa-storage/*"
       #              }
       #          ]
       #      }

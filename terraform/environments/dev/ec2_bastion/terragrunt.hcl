@@ -1,18 +1,23 @@
 #------------------------------------------------------------------------------
-# written by: Miguel Afonso
-#             https://www.linkedin.com/in/mmafonso/
+# written by: Lawrence McDaniel
+#             https://lawrencemcdaniel.com/
 #
-# date: Aug-2021
+# date: Feb-2022
 #
-# usage: create all the application secrets
+# usage: create an EC2 instance with ssh access and a DNS record.
 #------------------------------------------------------------------------------
 locals {
   # Automatically load environment-level variables
   environment_vars = read_terragrunt_config(find_in_parent_folders("env.hcl"))
   global_vars      = read_terragrunt_config(find_in_parent_folders("global.hcl"))
 
-  resource_name = local.environment_vars.locals.environment_namespace
-  environment_namespace = local.environment_vars.locals.environment_namespace
+  # Extract out common variables for reuse
+  platform_name    = local.global_vars.locals.platform_name
+  platform_region  = local.global_vars.locals.platform_region
+  ec2_ssh_key_name = local.global_vars.locals.ec2_ssh_key_name
+  environment      = local.environment_vars.locals.environment
+  aws_region       = local.global_vars.locals.aws_region
+  resource_name    = "live-${local.global_vars.locals.platform_name}-${local.global_vars.locals.platform_region}-bastion"
 
   tags = merge(
     local.environment_vars.locals.tags,
@@ -20,10 +25,6 @@ locals {
     { Name = "${local.resource_name}" }
   )
 
-}
-
-dependencies {
-  paths = ["../vpc", "../kubernetes"]
 }
 
 dependency "vpc" {
@@ -42,9 +43,8 @@ dependency "vpc" {
 
 # Terragrunt will copy the Terraform configurations specified by the source parameter, along with any files in the
 # working directory, into a temporary folder, and execute your Terraform commands in that folder.
-
 terraform {
-  source = "../../../modules//kubernetes_secrets"
+  source = "../../../modules//ec2_bastion"
 }
 
 # Include all settings from the root terragrunt.hcl file
@@ -52,10 +52,26 @@ include {
   path = find_in_parent_folders()
 }
 
+# -----------------------------------------------------------------------------
+
+
+
 # These are the variables we have to pass in to use the module specified in the terragrunt configuration above
 inputs = {
-  resource_name = local.resource_name
-  environment_namespace = local.environment_namespace
-  namespace = "openedx"
-  tags          = local.tags
+  platform_name    = local.platform_name
+  platform_region  = local.platform_region
+  environment      = local.environment
+  ec2_ssh_key_name = local.ec2_ssh_key_name
+
+  vpc_id            = dependency.vpc.outputs.vpc_id
+  availability_zone = "${local.aws_region}a"
+
+  ingress_cidr_blocks = dependency.vpc.outputs.public_subnets_cidr_blocks
+
+  security_group_name_prefix = local.resource_name
+
+  # FIX NOTE: how to choose only one subnet????
+  subnet_id = dependency.vpc.outputs.public_subnets[0]
+  tags      = local.tags
+
 }

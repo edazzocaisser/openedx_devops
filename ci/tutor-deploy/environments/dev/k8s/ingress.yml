@@ -29,7 +29,7 @@ spec:
   - hosts:
     - "dev.mrionline.com"
     - "*.dev.mrionline.com"
-    secretName: wild-openedx-live-tls
+    secretName: wild-openedx-dev-tls
   rules:
   - host: dev.mrionline.com
     http:

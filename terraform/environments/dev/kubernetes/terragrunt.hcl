@@ -11,10 +11,12 @@ locals {
   environment_vars = read_terragrunt_config(find_in_parent_folders("env.hcl"))
   global_vars      = read_terragrunt_config(find_in_parent_folders("global.hcl"))
 
+
+
   # Extract out common variables for reuse
   env                             = local.environment_vars.locals.environment
   environment_domain              = local.environment_vars.locals.environment_domain
-  environment_namespace           = local.environment_vars.locals.environment_namespace
+  environment_namespace           = "live-${local.global_vars.locals.platform_name}-${local.global_vars.locals.platform_region}"
   root_domain                     = local.global_vars.locals.root_domain
   platform_name                   = local.global_vars.locals.platform_name
   platform_region                 = local.global_vars.locals.platform_region
