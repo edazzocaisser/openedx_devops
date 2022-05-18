@@ -15,4 +15,5 @@
 #factory_boy
 #django-debug-toolbar
 
--e ./custom-edx-plugin
+-e ./edx-plugin
+-e ./edx-ora2
