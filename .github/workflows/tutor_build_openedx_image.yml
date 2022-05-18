@@ -66,13 +66,13 @@ jobs:
           echo "THEMES_PATH=$THEMES_PATH"
           echo "PLUGINS_PATH=$PLUGINS_PATH"
 
-      #- name: Checkout custom theme repo
-      #  uses: actions/checkout@v2
-      #  with:
-      #    repository: Medality-Health/edx-theme
-      #    path: ${{ env.THEMES_PATH }}/edx-theme
-      #    token: ${{ secrets.PAT }}
-      #    ref: main
+      - name: Checkout custom theme repo
+        uses: actions/checkout@v2
+        with:
+          repository: Medality-Health/edx-theme
+          path: ${{ env.THEMES_PATH }}/edx-theme
+          token: ${{ secrets.PAT }}
+          ref: master
 
       - name: Checkout custom edx plugin repo
         uses: actions/checkout@v2
