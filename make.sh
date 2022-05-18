@@ -23,5 +23,5 @@ cookiecutter --checkout $GITHUB_BRANCH \
              global_account_id=621672204142 \
              global_root_domain=mrionline.com \
              global_aws_route53_hosted_zone_id=Z0476367ACNR8F3YFZX \
-             environment_name=dev \
-             environment_subdomain=dev
+             environment_name=prod \
+             environment_subdomain=app
