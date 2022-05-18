@@ -54,7 +54,7 @@ jobs:
       - name: Get Kube config
         run: |-
           sudo snap install kubectl --channel=1.23/stable --classic
-          aws eks --region us-east-2 update-kubeconfig --name prod-mrionline-global --alias eks-prod
+          aws eks --region us-east-2 update-kubeconfig --name mrionline-global-live --alias eks-prod
 
       # dump version information for aws cli and kubectl to the console
       - name: Check environments versions
