@@ -51,8 +51,8 @@ locals {
   kubernetes_version = "1.22"
   eks_worker_group_instance_type = "t3.large"
   eks_worker_group_min_size = 1
-  eks_worker_group_max_size = 2
-  eks_worker_group_desired_size = 1
+  eks_worker_group_max_size = 5
+  eks_worker_group_desired_size = 2
 
   tags = {
     Environment = local.environment
