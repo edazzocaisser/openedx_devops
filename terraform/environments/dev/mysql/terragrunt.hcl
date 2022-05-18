@@ -11,9 +11,8 @@ locals {
   environment_vars = read_terragrunt_config(find_in_parent_folders("env.hcl"))
   global_vars      = read_terragrunt_config(find_in_parent_folders("global.hcl"))
 
-  resource_name         = "live-${local.global_vars.locals.platform_name}-${local.global_vars.locals.platform_region}"
-
-  identifier            = "${local.environment_vars.locals.environment}"
+  resource_name         = "${local.global_vars.locals.platform_name}-${local.global_vars.locals.platform_region}-live"
+  identifier            = "${local.resource_name}"
   mysql_instance_class  = local.environment_vars.locals.mysql_instance_class
 
   tags = merge(

@@ -52,17 +52,17 @@ The Terraform scripts in this repo provide a 1-click means of creating / updatin
 
 - LMS at https://dev.mrionline.com
 - CMS at https://studio.dev.mrionline.com
-- CDN at https://cdn.dev.mrionline.com linked to a public read-only S3 bucket named dev-mrionline-usa-storage
+- CDN at https://cdn.dev.mrionline.com linked to a public read-only S3 bucket named dev-mrionline-global-storage
 - public ssh access via a t2.micro Ubuntu 20.04 LTS bastion EC2 instance at bastion.dev.mrionline.com
-- daily data backups archived into a private S3 bucket named dev-mrionline-usa-mongodb-backup
+- daily data backups archived into a private S3 bucket named dev-mrionline-global-mongodb-backup
 
 You can also optionally automatically create additional environments for say, dev and test and QA and so forth.
 These would result in environments like the following:
 
 - LMS at https://dev.dev.mrionline.com
 - CMS at https://studio.dev.dev-mrionline.com
-- CDN at https://cdn.dev.dev.mrionline.com linked to an S3 bucket named dev-mrionline-usa-storage
-- daily data backups archived into an S3 bucket named dev-mrionline-usa-mongodb-backup
+- CDN at https://cdn.dev.dev.mrionline.com linked to an S3 bucket named dev-mrionline-global-storage
+- daily data backups archived into an S3 bucket named dev-mrionline-global-mongodb-backup
 
 Cookiecutter Manifest
 ------------------------
@@ -158,7 +158,7 @@ Set your `global parameters <terraform/environments/global.hcl>`_
 
   locals {
     platform_name    = "mrionline"
-    platform_region  = "usa"
+    platform_region  = "global"
     root_domain      = "mrionline.com.ai"
     aws_region       = "us-east-2"
     account_id       = "621672204142"
@@ -288,7 +288,7 @@ These scripts will create the following resources in your AWS account:
 - **MongoDB**. uses `AWS DocumentDB <https://aws.amazon.com/documentdb/>`_ for all MongoDB data, accessible insid the vpc as mongodb.master.dev.mrionline.com:27017 and mongodb.reader.dev.mrionline.com. Instance size settings are located in the `environment configuration file <terraform/environments/dev/env.hcl>`_, and other common configuration settings `are located here <terraform/modules/documentdb>`_. Passwords are stored in `Kubernetes Secrets <https://kubernetes.io/docs/concepts/configuration/secret/>`_ accessible from the EKS cluster.
 - **Redis**. uses `AWS ElastiCache <https://aws.amazon.com/elasticache/>`_ for all Django application caches, accessible inside the vpc as cache.dev.mrionline.com. Instance size settings are located in the `environment configuration file <terraform/environments/dev/env.hcl>`_. This is necessary in order to make the Open edX application layer completely ephemeral. Most importantly, user's login session tokens are persisted in Redis and so these need to be accessible to all app containers from a single Redis cache. Common configuration settings `are located here <terraform/environments/dev/redis/terragrunt.hcl>`_. Passwords are stored in `Kubernetes Secrets <https://kubernetes.io/docs/concepts/configuration/secret/>`_ accessible from the EKS cluster.
 - **Container Registry**. uses this `automated Github Actions workflow <.github/workflows/tutor_build_image.yml>`_ to build your `tutor Open edX container <https://docs.tutor.overhang.io/>`_ and then register it in `Amazon Elastic Container Registry (Amazon ECR) <https://aws.amazon.com/ecr/>`_. Uses this `automated Github Actions workflow <.github/workflows/tutor_deploy_prod.yml>`_ to deploy your container to `AWS Amazon Elastic Kubernetes Service (EKS) <https://aws.amazon.com/kubernetes/>`_. EKS worker instance size settings are located in the `environment configuration file <terraform/environments/dev/env.hcl>`_. Note that tutor provides out-of-the-box support for Kubernetes. Terraform leverages Elastic Kubernetes Service to create a Kubernetes cluster onto which all services are deployed. Common configuration settings `are located here <terraform/environments/dev/kubernetes/terragrunt.hcl>`_
-- **User Data**. uses `AWS S3 <https://aws.amazon.com/s3/>`_ for storage of user data. This installation makes use of a `Tutor plugin to offload object storage <https://github.com/hastexo/tutor-contrib-s3>`_ from the Ubuntu file system to AWS S3. It creates a public read-only bucket named of the form dev-mrionline-usa-storage, with write access provided to edxapp so that app-generated static content like user profile images, xblock-generated file content, application badges, e-commerce pdf receipts, instructor grades downloads and so on will be saved to this bucket. This is not only a necessary step for making your application layer ephemeral but it also facilitates the implementation of a CDN (which Terraform implements for you). Terraform additionally implements a completely separate, more secure S3 bucket for archiving your daily data backups of MySQL and MongoDB. Common configuration settings `are located here <terraform/environments/dev/s3/terragrunt.hcl>`_
+- **User Data**. uses `AWS S3 <https://aws.amazon.com/s3/>`_ for storage of user data. This installation makes use of a `Tutor plugin to offload object storage <https://github.com/hastexo/tutor-contrib-s3>`_ from the Ubuntu file system to AWS S3. It creates a public read-only bucket named of the form dev-mrionline-global-storage, with write access provided to edxapp so that app-generated static content like user profile images, xblock-generated file content, application badges, e-commerce pdf receipts, instructor grades downloads and so on will be saved to this bucket. This is not only a necessary step for making your application layer ephemeral but it also facilitates the implementation of a CDN (which Terraform implements for you). Terraform additionally implements a completely separate, more secure S3 bucket for archiving your daily data backups of MySQL and MongoDB. Common configuration settings `are located here <terraform/environments/dev/s3/terragrunt.hcl>`_
 - **CDN**. uses `AWS Cloudfront <https://aws.amazon.com/cloudfront/>`_ as a CDN, publicly acccessible as https://cdn.dev.mrionline.com. Terraform creates Cloudfront distributions for each of your enviornments. These are linked to the respective public-facing S3 Bucket for each environment, and the requisite SSL/TLS ACM-issued certificate is linked. Terraform also automatically creates all Route53 DNS records of form cdn.dev.mrionline.com. Common configuration settings `are located here <terraform/environments/dev/cloudfront/terragrunt.hcl>`_
 - **Password & Secrets Management** uses `Kubernetes Secrets <https://kubernetes.io/docs/concepts/configuration/secret/>`_ in the EKS cluster. Open edX software relies on many passwords and keys, collectively referred to in this documentation simply as, "*secrets*". For all back services, including all Open edX applications, system account and root passwords are randomly and strongluy generated during automated deployment and then archived in EKS' secrets repository. This methodology facilitates routine updates to all of your passwords and other secrets, which is good practice these days. Common configuration settings `are located here <terraform/environments/dev/secrets/terragrunt.hcl>`_
 - **SSL Certs**. Uses `AWS Certificate Manager <https://aws.amazon.com/certificate-manager/>`_ and LetsEncrypt. Terraform creates all SSL/TLS certificates. It uses a combination of AWS Certificate Manager (ACM) as well as LetsEncrypt. Additionally, the ACM certificates are stored in two locations: your aws-region as well as in us-east-1 (as is required by AWS CloudFront). Common configuration settings `are located here <terraform/modules/kubernetes/acm.tf>`_

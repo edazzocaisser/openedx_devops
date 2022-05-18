@@ -18,7 +18,7 @@ cookiecutter --checkout $GITHUB_BRANCH \
              --no-input \
              $GITHUB_REPO \
              global_platform_name=mrionline \
-             global_platform_region=usa \
+             global_platform_region=global \
              global_aws_region=us-east-2 \
              global_account_id=621672204142 \
              global_root_domain=mrionline.com \

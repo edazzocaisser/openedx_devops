@@ -9,7 +9,7 @@
 #------------------------------------------------------------------------------
 locals {
   platform_name    = "mrionline"
-  platform_region  = "usa"
+  platform_region  = "global"
   root_domain      = "mrionline.com"
   aws_region       = "us-east-2"
   account_id       = "621672204142"

@@ -11,7 +11,7 @@ locals {
   environment_vars = read_terragrunt_config(find_in_parent_folders("env.hcl"))
   global_vars      = read_terragrunt_config(find_in_parent_folders("global.hcl"))
 
-  resource_name   = "live-${local.global_vars.locals.platform_name}-${local.global_vars.locals.platform_region}"
+  resource_name   = "${local.global_vars.locals.platform_name}-${local.global_vars.locals.platform_region}-live"
   redis_node_type = local.environment_vars.locals.redis_node_type
 
   tags = merge(
@@ -88,7 +88,7 @@ inputs = {
   # cache engine configuration
   engine                        = "redis"
   engine_version                = "6.x"
-  num_cache_clusters         = 1
+  num_cache_clusters            = 1
   port                          = 6379
   family                        = "redis6.x"
   node_type                     = local.redis_node_type
