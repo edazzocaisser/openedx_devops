@@ -1,4 +1,0 @@
-LMS_HOSTNAME=dev.mrionline.com
-CMS_HOSTNAME=studio.dev.mrionline.com
-DOCKER_IMAGE_OPENEDX=621672204142.dkr.ecr.us-east-2.amazonaws.com/openedx:latest
-DOCKER_IMAGE_MFE=621672204142.dkr.ecr.us-east-2.amazonaws.com/mfe:latest
