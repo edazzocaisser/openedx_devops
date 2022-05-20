@@ -10,10 +10,11 @@
 locals {
   global_vars = read_terragrunt_config(find_in_parent_folders("global.hcl"))
 
-  environment           = "prod"
-  environment_subdomain = "app"
-  environment_domain    = "${local.environment_subdomain}.${local.global_vars.locals.root_domain}"
-  environment_namespace = "${local.global_vars.locals.platform_name}-${local.global_vars.locals.platform_region}-${local.environment}"
+  environment               = "prod"
+  environment_subdomain     = "app"
+  environment_domain        = "${local.environment_subdomain}.${local.global_vars.locals.root_domain}"
+  environment_namespace     = "${local.global_vars.locals.platform_name}-${local.global_vars.locals.platform_region}-${local.environment}"
+  shared_resource_namespace = "${local.global_vars.locals.platform_name}-${local.global_vars.locals.platform_region}-${local.global_vars.locals.shared_resource_identifier}"
 
 
   # AWS infrastructure sizing
@@ -51,8 +52,8 @@ locals {
   kubernetes_version = "1.22"
   eks_worker_group_instance_type = "t3.large"
   eks_worker_group_min_size = 1
-  eks_worker_group_max_size = 5
-  eks_worker_group_desired_size = 2
+  eks_worker_group_max_size = 2
+  eks_worker_group_desired_size = 1
 
   tags = {
     Environment = local.environment

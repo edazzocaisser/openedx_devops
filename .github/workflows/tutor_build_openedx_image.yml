@@ -21,8 +21,6 @@ jobs:
     env:
       ECR_REPOSITORY: openedx
       ECR_REGISTRY: 621672204142.dkr.ecr.us-east-2.amazonaws.com
-      OPENEDX_COMMON_VERSION: open-release/maple.3
-
     steps:
       - uses: actions/checkout@v1
 
@@ -54,10 +52,6 @@ jobs:
           echo "THEMES_PATH=$GITHUB_WORKSPACE/tutor/env/build/openedx/themes" >> $GITHUB_ENV
           echo "PLUGINS_PATH=$GITHUB_WORKSPACE/tutor/env/build/openedx/requirements" >> $GITHUB_ENV
 
-      - name: Configure Open edX version
-        run: |-
-          echo "OPENEDX_COMMON_VERSION=$OPENEDX_COMMON_VERSION" >> $GITHUB_ENV
-
       - name: Test Tutor and Environment
         run: |
           tutor --version
@@ -69,16 +63,16 @@ jobs:
       - name: Checkout custom theme repo
         uses: actions/checkout@v2
         with:
-          repository: Medality-Health/edx-theme
-          path: ${{ env.THEMES_PATH }}/edx-theme
+          repository: lpm0073/edx-theme-example
+          path: ${{ env.THEMES_PATH }}/custom-edx-theme
           token: ${{ secrets.PAT }}
-          ref: master
+          ref: main
 
       - name: Checkout custom edx plugin repo
         uses: actions/checkout@v2
         with:
-          repository: Medality-Health/edx-plugin
-          path: ${{ env.PLUGINS_PATH }}/edx-plugin
+          repository: lpm0073/openedx-plugin-example
+          path: ${{ env.PLUGINS_PATH }}/custom-edx-plugin
           token: ${{ secrets.PAT }}
           ref: main
 

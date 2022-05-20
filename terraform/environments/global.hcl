@@ -10,6 +10,7 @@
 locals {
   platform_name    = "mrionline"
   platform_region  = "global"
+  shared_resource_identifier = "live"
   root_domain      = "mrionline.com"
   aws_region       = "us-east-2"
   account_id       = "621672204142"
