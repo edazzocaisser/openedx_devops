@@ -8,7 +8,7 @@ locals {
   platform_region = local.global_vars.locals.platform_region
 
   environment           = local.environment_vars.locals.environment
-  environment_namespace = local.environment_vars.locals.environment_namespace
+  namespace = local.environment_vars.locals.environment_namespace
 }
 
 # Generate an AWS provider block
@@ -33,7 +33,7 @@ remote_state {
     bucket         = "${get_env("TG_BUCKET_PREFIX", local.account_id)}-terraform-tfstate"
     key            = "${path_relative_to_include()}/terraform.tfstate"
     region         = local.aws_region
-    dynamodb_table = "${local.environment_namespace}-terraform-lock"
+    dynamodb_table = "${local.namespace}-terraform-lock"
     s3_bucket_tags = {
       Terraform       = "true"
       Platform        = local.platform_name
