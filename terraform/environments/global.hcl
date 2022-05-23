@@ -14,7 +14,6 @@ locals {
   root_domain      = "mrionline.com"
   aws_region       = "us-east-2"
   account_id       = "621672204142"
-  ec2_ssh_key_name = "mrionline-live"
 
   tags = {
     Platform        = local.platform_name
@@ -30,5 +29,4 @@ inputs = {
   aws_region       = local.aws_region
   account_id       = local.account_id
   root_domain      = local.root_domain
-  ec2_ssh_key_name = local.ec2_ssh_key_name
 }

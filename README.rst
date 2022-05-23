@@ -162,7 +162,6 @@ Set your `global parameters <terraform/environments/global.hcl>`_
     root_domain      = "mrionline.com.ai"
     aws_region       = "us-east-2"
     account_id       = "621672204142"
-    ec2_ssh_key_name = "mrionline-live"
   }
 
 
