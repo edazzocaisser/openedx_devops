@@ -30,7 +30,6 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"]
 }
 
-
 resource "tls_private_key" "bastion" {
   algorithm = "RSA"
   rsa_bits  = 4096
@@ -40,7 +39,6 @@ resource "aws_key_pair" "bastion" {
   key_name   = var.resource_name
   public_key = tls_private_key.bastion.public_key_openssh
 }
-
 
 resource "aws_security_group" "sg_bastion" {
   name_prefix = "${var.environment_namespace}-bastion"

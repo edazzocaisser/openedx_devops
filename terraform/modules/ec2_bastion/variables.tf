@@ -53,5 +53,5 @@ variable "environment" {
 }
 
 variable "resource_name" {
-  type=string
+  type = string
 }
