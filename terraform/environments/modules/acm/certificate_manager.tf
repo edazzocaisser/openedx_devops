@@ -20,6 +20,7 @@ data "aws_route53_zone" "environment_domain" {
   name = var.environment_domain
 }
 
+
 module "acm_root_domain_environment_region" {
   source  = "terraform-aws-modules/acm/aws"
   version = "~> 3.4"

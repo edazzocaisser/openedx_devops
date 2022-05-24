@@ -75,7 +75,7 @@ resource "aws_security_group" "all_worker_mgmt" {
 
 module "eks" {
   source                          = "terraform-aws-modules/eks/aws"
-  version                         = "~> 18.20"
+  version                         = "~> 18.21"
   cluster_name                    = var.namespace
   cluster_version                 = var.kubernetes_cluster_version
   cluster_endpoint_private_access = true

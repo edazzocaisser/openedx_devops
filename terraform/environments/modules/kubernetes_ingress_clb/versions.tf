@@ -10,9 +10,9 @@ terraform {
   required_version = "~> 1.1"
 
   required_providers {
-    aws        = "~> 4.11"
+    aws        = "~> 4.15"
     local      = "~> 2.2"
-    random     = "~> 3.1"
-    kubernetes = "~> 2.10"
+    random     = "~> 3.2"
+    kubernetes = "~> 2.11"
   }
 }

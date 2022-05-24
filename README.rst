@@ -79,8 +79,6 @@ This repository was generated using `Cookiecutter <https://cookiecutter.readthed
     - maple.3
   * - `MySQL Server <https://www.mysql.com/>`_
     - 5.7.33
-  * - `MongoDB Server <https://www.mongodb.com/>`_
-    - 3.6.0
   * - `Redis Cache <https://redis.io/>`_
     - 6.x
   * - `Tutor Docker-based Open edX Installer <https://docs.tutor.overhang.io/>`_
@@ -89,40 +87,34 @@ This repository was generated using `Cookiecutter <https://cookiecutter.readthed
     - v0.2.1
   * - `Kubernetes Cluster <https://kubernetes.io/>`_
     - 1.22
-  * - Kubernetes `amazon/aws-alb-ingress-controller <https://hub.docker.com/r/amazon/aws-alb-ingress-controller/>`_
-    - v2.4.1
   * - `Terraform <https://www.terraform.io/>`_
-    - ~> 1.1
+    - ~> 1.2
   * - `terraform-aws-modules/acm <https://registry.terraform.io/modules/terraform-aws-modules/acm/aws/latest>`_
     - ~> 3.4
   * - `terraform-aws-modules/cloudfront <https://registry.terraform.io/modules/terraform-aws-modules/cloudfront/aws/latest>`_
     - ~> 2.9
   * - `terraform-aws-modules/eks <https://registry.terraform.io/modules/terraform-aws-modules/eks/aws/latest>`_
-    - ~> 18.20
+    - ~> 18.21
   * - `terraform-aws-modules/iam <https://registry.terraform.io/modules/terraform-aws-modules/iam/aws/latest>`_
-    - ~> 4.21
+    - ~> 5.0.0
   * - `terraform-aws-modules/rds <https://registry.terraform.io/modules/terraform-aws-modules/rds/aws/latest>`_
-    - ~> 4.2.0
+    - ~> 4.3.0
   * - `terraform-aws-modules/s3-bucket <https://registry.terraform.io/modules/terraform-aws-modules/s3-bucket/aws/latest>`_
-    - ~> 3.1
+    - ~> 3.2
   * - `terraform-aws-modules/security-group <https://registry.terraform.io/modules/terraform-aws-modules/security-group/aws/latest>`_
     - ~> 4.9
   * - `terraform-aws-modules/vpc <https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest>`_
     - ~> 3.14
-  * - Terraform `Helm ingress-alb-controller <https://github.com/kubernetes-sigs/aws-load-balancer-controller/>`_
-    - ~> 1.4
   * - Terraform `Helm cert-manager <https://charts.jetstack.io>`_
     - ~> 1.8
   * - Terraform `Kubernetes Provider <https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs>`_
-    - ~> 2.10
+    - ~> 2.11
   * - Terraform `AWS Provider <https://registry.terraform.io/providers/hashicorp/aws/latest/docs>`_
-    - ~> 4.11
-  * - Terraform `Helm Provider <https://registry.terraform.io/providers/hashicorp/helm/latest/docs>`_
-    - ~> 2.5
+    - ~> 4.15
   * - Terraform `Local Provider <https://registry.terraform.io/providers/hashicorp/local/latest/docs>`_
     - ~> 2.2
   * - Terraform `Random Provider <https://registry.terraform.io/providers/hashicorp/random/latest/docs>`_
-    - ~> 3.1
+    - ~> 3.2
 
 
 Important Considerations

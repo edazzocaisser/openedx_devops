@@ -9,7 +9,7 @@
 #------------------------------------------------------------------------------
 module "cert_manager_irsa" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "~> 4.21"
+  version                       = "~> 5.0.0"
   create_role                   = true
   role_name                     = "${var.namespace}-cert_manager-irsa"
   provider_url                  = replace(data.aws_eks_cluster.eks.identity[0].oidc[0].issuer, "https://", "")

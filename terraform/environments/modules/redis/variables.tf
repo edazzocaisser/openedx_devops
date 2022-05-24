@@ -14,7 +14,7 @@ variable "environment_domain" {
 }
 
 variable "shared_resource_namespace" {
-  type = string  
+  type = string
 }
 variable "create_elasticache_instance" {
   description = "Whether to create a cache instance"
