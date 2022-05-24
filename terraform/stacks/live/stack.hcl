@@ -13,12 +13,6 @@ locals {
   stack           = local.global_vars.locals.shared_resource_identifier
   stack_namespace = "${local.global_vars.locals.platform_name}-${local.global_vars.locals.platform_region}-${local.global_vars.locals.shared_resource_identifier}"
 
-
-  # AWS infrastructure sizing
-  # 2 vCPU 4gb
-  mongodb_instance_class = "db.t3.medium"
-  mongodb_cluster_size   = 1
-
   # 1 vCPU 2gb
   mysql_instance_class = "db.t2.small"
 
