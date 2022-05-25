@@ -29,6 +29,7 @@ cookiecutter --checkout $GITHUB_BRANCH \
              eks_worker_group_min_size=1 \
              eks_worker_group_max_size=2 \
              eks_worker_group_desired_size=1 \
+             kubectl_version=1.23/stable \
              mysql_instance_class=db.t2.small \
              mysql_allocated_storage=10 \
              redis_node_type=cache.t2.small
