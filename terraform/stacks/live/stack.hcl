@@ -13,11 +13,10 @@ locals {
   stack           = local.global_vars.locals.shared_resource_identifier
   stack_namespace = "${local.global_vars.locals.platform_name}-${local.global_vars.locals.platform_region}-${local.global_vars.locals.shared_resource_identifier}"
 
-  # 1 vCPU 2gb
+  # AWS instance sizing
   mysql_instance_class = "db.t2.small"
-
-  # 1 vCPU 1.55gb
-  redis_node_type = "cache.t2.small"
+  mysql_allocated_storage=10
+  redis_node_type      = "cache.t2.small"
 
   #----------------------------------------------------------------------------
   # AWS Elastic Kubernetes service
@@ -45,6 +44,7 @@ locals {
   eks_worker_group_min_size = 1
   eks_worker_group_max_size = 2
   eks_worker_group_desired_size = 1
+
 
   tags = {
     Stack = local.stack

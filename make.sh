@@ -24,4 +24,11 @@ cookiecutter --checkout $GITHUB_BRANCH \
              global_root_domain=mrionline.com \
              global_aws_route53_hosted_zone_id=Z0476367ACNR8F3YFZX \
              environment_name=prod \
-             environment_subdomain=app
+             environment_subdomain=app \
+             eks_worker_group_instance_type=t3.large \
+             eks_worker_group_min_size=1 \
+             eks_worker_group_max_size=2 \
+             eks_worker_group_desired_size=1 \
+             mysql_instance_class=db.t2.small \
+             mysql_allocated_storage=10 \
+             redis_node_type=cache.t2.small
