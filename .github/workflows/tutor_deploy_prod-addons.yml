@@ -13,7 +13,7 @@
 #        IV.  Merge all of the configuration data into Tutor's Open edX configuration files
 #        V.   Deploy Open edX into the Kubernetes cluster
 #------------------------------------------------------------------------------
-name: prod Deploy to Kubernetes
+name: prod Deploy optional modules to Kubernetes
 
 on: [workflow_dispatch]
 
