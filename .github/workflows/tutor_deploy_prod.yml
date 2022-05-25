@@ -35,7 +35,7 @@ jobs:
       #------------------------------------------------------------------------
 
       # grab the AWS IAM key and scret for the IAM user named 'ci'
-      # These are manually stored in https://github.com/Medality-Health/openedx_devops/settings
+      # These are manually stored in https://github.com/lpm0073/openedx_devops/settings
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -87,7 +87,7 @@ jobs:
 
       # retrieve the Open edX JWT token that we created with Terraform and
       # then stored in Kubernetes secrets
-      # see: https://github.com/Medality-Health/openedx_devops/blob/main/terraform/modules/kubernetes_secrets/main.tf
+      # see: https://github.com/lpm0073/openedx_devops/blob/main/terraform/modules/kubernetes_secrets/main.tf
       - name: Fetch JWT token
         run: |-
           kubectl get secret jwt -n $NAMESPACE -o json |  jq  '.data| map_values(@base64d)'  | jq -r 'keys[] as $k | "\(.[$k])"' > jwt_private_key
@@ -103,7 +103,7 @@ jobs:
       #
       # Also note that we are using jq to add a prefix of "TUTOR_" to each of the parameter names
       #
-      # see: https://github.com/Medality-Health/openedx_devops/blob/main/terraform/modules/mysql/main.tf
+      # see: https://github.com/lpm0073/openedx_devops/blob/main/terraform/modules/mysql/main.tf
       - name: fetch MySQL configuration from Kubernetes secrets
         run: |-
           echo "TUTOR_RUN_MYSQL=false" >> $GITHUB_ENV
@@ -117,7 +117,7 @@ jobs:
       # retrieve the Redis connection parameter that we created in Terraform:
       #   REDIS_HOST: redis.app.mrionline.com
       #
-      # see: https://github.com/Medality-Health/openedx_devops/blob/main/terraform/modules/redis/main.tf
+      # see: https://github.com/lpm0073/openedx_devops/blob/main/terraform/modules/redis/main.tf
       - name: fetch Redis configuration from Kubernetes secrets
         run: |-
           echo "TUTOR_RUN_REDIS=false" >> $GITHUB_ENV
@@ -141,7 +141,7 @@ jobs:
                             --set EMAIL_PORT=587 \
                             --set EMAIL_USE_TLS=true
 
-      # see: https://github.com/Medality-Health/openedx_devops/blob/main/terraform/modules/kubernetes_secrets/main.tf
+      # see: https://github.com/lpm0073/openedx_devops/blob/main/terraform/modules/kubernetes_secrets/main.tf
       - name: fetch EDX Secret Key from Kubernetes secrets
         run: |-
           kubectl get secret edx-secret-key -n $NAMESPACE  -o json | jq  '.data | map_values(@base64d)' | jq -r 'keys[] as $k | "TUTOR_\($k|ascii_upcase)=\(.[$k])"' >> $GITHUB_ENV
@@ -182,7 +182,7 @@ jobs:
       #          S3_REGION: us-east-2
       #
       # this config depends on a public read-only AWS S3 bucket policy like this:
-      # https://github.com/Medality-Health/terraform-openedx/blob/main/components/s3/main.tf#L19
+      # https://github.com/lpm0073/terraform-openedx/blob/main/components/s3/main.tf#L19
       #
       #      {
       #          "Version": "2012-10-17",
@@ -242,7 +242,7 @@ jobs:
                             --set CREDENTIALS_CATALOG_API_URL=${LMS_HOSTNAME} \
                             --set CREDENTIALS_PRIVACY_POLICY_URL="${LMS_HOSTNAME}/pricacy-policy" \
                             --set CREDENTIALS_SECRET_KEY="${TUTOR_OPENEDX_SECRET_KEY}" \
-                            --set CREDENTIALS_SITE_NAME=Your School \
+                            --set CREDENTIALS_SITE_NAME="Your School" \
                             --set CREDENTIALS_TOS_URL="${LMS_HOSTNAME}/tos" \
                             --set CREDENTIALS_LOGO_URL="${COMMON_LOGO_URL}" \
                             --set CREDENTIALS_LOGO_URL_PNG="${COMMON_LOGO_URL}" \

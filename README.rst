@@ -284,14 +284,14 @@ Both the Build as well as the Deploy workflows were pre-configured based on your
 I. Build your Tutor Docker Image
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use `this automated Github Actions workflow <https://github.com/Medality-Health/openedx_devops/actions/workflows/tutor_build_image.yml>`_ to build a customized Open edX Docker container based on the latest stable version of Open edX (current maple.3) and
+Use `this automated Github Actions workflow <https://github.com/lpm0073/openedx_devops/actions/workflows/tutor_build_image.yml>`_ to build a customized Open edX Docker container based on the latest stable version of Open edX (current maple.3) and
 your Open edX custom theme repository and Open edX plugin repository. Your new Docker image will be automatically uploaded to `AWS Amazon Elastic Container Registry <https://us-east-2.console.aws.amazon.com/ecr/repositories?region=us-east-2>`_
 
 
 II. Deploy your Docker Image to a Kubernetes Cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use `this automated Github Actions workflow <https://github.com/Medality-Health/openedx_devops/actions/workflows/tutor_deploy_prod.yml>`_ to deploy your customized Docker container to a Kubernetes Cluster.
+Use `this automated Github Actions workflow <https://github.com/lpm0073/openedx_devops/actions/workflows/tutor_deploy_prod.yml>`_ to deploy your customized Docker container to a Kubernetes Cluster.
 Open edX LMS and Studio configuration parameters are located `here <ci/tutor-deploy/environments/prod/settings_merge.json>`_.
 
 
