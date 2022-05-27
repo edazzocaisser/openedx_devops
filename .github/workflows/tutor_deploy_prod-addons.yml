@@ -237,3 +237,9 @@ jobs:
                             --set BACKUP_K8S_CRONJOB_HISTORYLIMIT_SUCCESS=3 \
                             --set BACKUP_K8S_CRONJOB_BACKUP_SCHEDULE="0 0 * * *"
 
+      - name: Enable the Discovery plugin
+        run: |-
+          pip install tutor-discovery
+          tutor plugins enable discovery
+          tutor config save
+
