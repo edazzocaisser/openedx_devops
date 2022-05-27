@@ -22,7 +22,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       COMMON_LOGO_URL: https://www.edx.org/images/logos/edx-logo-elm.svg
-      DOCKER_IMAGE_ANDROID: 621672204142.dkr.ecr.us-east-2.amazonaws.com/openedx_android:latest
       DOCKER_IMAGE_BACKUP: 621672204142.dkr.ecr.us-east-2.amazonaws.com/openedx_backup:latest
       DOCKER_IMAGE_CREDENTIALS: 621672204142.dkr.ecr.us-east-2.amazonaws.com/openedx_credentials:latest
       DOCKER_IMAGE_MFE: 621672204142.dkr.ecr.us-east-2.amazonaws.com/openedx_mfe:latest
@@ -305,17 +304,6 @@ jobs:
           pip install tutor-forum
           tutor plugins enable forum
           tutor config save
-
-      # see: https://github.com/overhangio/tutor-android
-      - name: Configure Android plugin
-        run:  |-
-          pip install tutor-android
-          tutor plugins enable android
-          tutor config save --set ANDROID_DOCKER_IMAGE=${DOCKER_IMAGE_ANDROID}
-        #                  --set ANDROID_RELEASE_STORE_PASSWORD=yourstorepassword \
-        #                  --set ANDROID_RELEASE_KEY_PASSWORD=yourreleasekeypassword \
-        #                  --set ANDROID_RELEASE_KEY_ALIAS=yourreleasekeyalias \
-        #                  --set ANDROID_ENABLE_RELEASE_MODE=true
 
       - name: Generate Tutor Config
         run:  |-
