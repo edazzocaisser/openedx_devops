@@ -13,7 +13,7 @@
 #        IV.  Merge all of the configuration data into Tutor's Open edX configuration files
 #        V.   Deploy Open edX into the Kubernetes cluster
 #------------------------------------------------------------------------------
-name: prod Deploy optional modules to Kubernetes
+name: prod Deploy optional Open edX modules to Kubernetes
 
 on: [workflow_dispatch]
 
@@ -35,7 +35,7 @@ jobs:
       #------------------------------------------------------------------------
 
       # grab the AWS IAM key and scret for the IAM user named 'ci'
-      # These are manually stored in https://github.com/lpm0073/openedx_devops/settings
+      # These are manually stored in https://github.com/Medality-Health/openedx_devops/settings
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -87,7 +87,7 @@ jobs:
 
       # retrieve the Open edX JWT token that we created with Terraform and
       # then stored in Kubernetes secrets
-      # see: https://github.com/lpm0073/openedx_devops/blob/main/terraform/modules/kubernetes_secrets/main.tf
+      # see: https://github.com/Medality-Health/openedx_devops/blob/main/terraform/modules/kubernetes_secrets/main.tf
       - name: Fetch JWT token
         run: |-
           kubectl get secret jwt -n $NAMESPACE -o json |  jq  '.data| map_values(@base64d)'  | jq -r 'keys[] as $k | "\(.[$k])"' > jwt_private_key
@@ -103,7 +103,7 @@ jobs:
       #
       # Also note that we are using jq to add a prefix of "TUTOR_" to each of the parameter names
       #
-      # see: https://github.com/lpm0073/openedx_devops/blob/main/terraform/modules/mysql/main.tf
+      # see: https://github.com/Medality-Health/openedx_devops/blob/main/terraform/modules/mysql/main.tf
       - name: fetch MySQL configuration from Kubernetes secrets
         run: |-
           echo "TUTOR_RUN_MYSQL=false" >> $GITHUB_ENV
@@ -118,7 +118,7 @@ jobs:
       # retrieve the Redis connection parameter that we created in Terraform:
       #   REDIS_HOST: redis.app.mrionline.com
       #
-      # see: https://github.com/lpm0073/openedx_devops/blob/main/terraform/modules/redis/main.tf
+      # see: https://github.com/Medality-Health/openedx_devops/blob/main/terraform/modules/redis/main.tf
       - name: fetch Redis configuration from Kubernetes secrets
         run: |-
           echo "TUTOR_RUN_REDIS=false" >> $GITHUB_ENV
@@ -142,7 +142,7 @@ jobs:
                             --set EMAIL_PORT=587 \
                             --set EMAIL_USE_TLS=true
 
-      # see: https://github.com/lpm0073/openedx_devops/blob/main/terraform/modules/kubernetes_secrets/main.tf
+      # see: https://github.com/Medality-Health/openedx_devops/blob/main/terraform/modules/kubernetes_secrets/main.tf
       - name: fetch EDX Secret Key from Kubernetes secrets
         run: |-
           kubectl get secret edx-secret-key -n $NAMESPACE  -o json | jq  '.data | map_values(@base64d)' | jq -r 'keys[] as $k | "TUTOR_\($k|ascii_upcase)=\(.[$k])"' >> $GITHUB_ENV
@@ -183,7 +183,7 @@ jobs:
       #          S3_REGION: us-east-2
       #
       # this config depends on a public read-only AWS S3 bucket policy like this:
-      # https://github.com/lpm0073/terraform-openedx/blob/main/components/s3/main.tf#L19
+      # https://github.com/Medality-Health/terraform-openedx/blob/main/components/s3/main.tf#L19
       #
       #      {
       #          "Version": "2012-10-17",
@@ -218,6 +218,20 @@ jobs:
                             --set S3_CUSTOM_DOMAIN="$S3_CUSTOM_DOMAIN" \
                             --set S3_REGION="$S3_REGION"
 
+      - name: Enable the hastexo Backup & Restore plugin
+        run: |-
+          pip install git+https://github.com/hastexo/tutor-contrib-backup@v0.0.6
+          tutor plugins enable backup
+
+          tutor config save --set BACKUP_DOCKER_IMAGE=${DOCKER_IMAGE_BACKUP} \        # IMPORTANT: you must run tutor_build_hastexo_backup first.
+                            --set BACKUP_K8S_CRONJOB_HISTORYLIMIT_FAILURE=1 \         # this is the plugin default value
+                            --set BACKUP_K8S_CRONJOB_HISTORYLIMIT_SUCCESS=3 \         # this is the plugin default value
+                            --set BACKUP_K8S_CRONJOB_BACKUP_SCHEDULE="0 0 * * *"      # (default "0 0 * * *", once a day at midnight)
+
+          # See the github README for additional AWS S3 configuration
+          # options in the event that you are not also installing
+          # hastexo/tutor-contrib-s3 (included above )
+
       - name: Enable the Discovery plugin
         run: |-
           pip install tutor-discovery
@@ -228,14 +242,14 @@ jobs:
         run: |-
           pip install tutor-mfe
           tutor plugins enable mfe
-          tutor config save --set MFE_DOCKER_IMAGE=${DOCKER_IMAGE_MFE} \
+          tutor config save --set MFE_DOCKER_IMAGE=${DOCKER_IMAGE_MFE} \              # IMPORTANT: you must run tutor_build_mfe first.
                             --set MFE_ENABLE_HTTPS=true
 
       - name: Enable and configure credentials plugin
         run: |-
           pip install git+https://github.com/lpm0073/tutor-contrib-credentials@v13.0.1
           tutor plugins enable credentials
-          tutor config save --set CREDENTIALS_DOCKER_IMAGE=${DOCKER_IMAGE_CREDENTIALS} \
+          tutor config save --set CREDENTIALS_DOCKER_IMAGE=${DOCKER_IMAGE_CREDENTIALS} \    # IMPORTANT: you must run tutor_build_credentials first.
                             --set CREDENTIALS_HOST="credentials.${LMS_HOSTNAME}" \
                             --set CREDENTIALS_LMS_HOST=${LMS_HOSTNAME} \
                             --set CREDENTIALS_LMS_URL_ROOT=${LMS_HOSTNAME} \
@@ -284,12 +298,12 @@ jobs:
           tutor plugins enable forum
           tutor config save
 
-      # see: https://github.com/overhangio/tutor-android
-      #- name: Configure Android plugin
-      #  run:  |-
-      #    pip install tutor-android
-      #    tutor plugins enable android
-      #    tutor config save
+       see: https://github.com/overhangio/tutor-android
+      - name: Configure Android plugin
+        run:  |-
+          pip install tutor-android
+          tutor plugins enable android
+          tutor config save
 
       - name: Generate Tutor Config
         run:  |-

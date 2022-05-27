@@ -3,3 +3,4 @@ CMS_HOSTNAME=studio.app.mrionline.com
 DOCKER_IMAGE_OPENEDX=621672204142.dkr.ecr.us-east-2.amazonaws.com/openedx:latest
 DOCKER_IMAGE_MFE=621672204142.dkr.ecr.us-east-2.amazonaws.com/mfe:latest
 DOCKER_IMAGE_CREDENTIALS=621672204142.dkr.ecr.us-east-2.amazonaws.com/credentials:latest
+DOCKER_IMAGE_BACKUP=621672204142.dkr.ecr.us-east-2.amazonaws.com/hastexo_backup:latest
