@@ -26,9 +26,9 @@ jobs:
       OPENEDX_COMMON_VERSION: open-release/maple.3
       COMMON_LOGO_URL: https://www.edx.org/images/logos/edx-logo-elm.svg
       DOCKER_IMAGE_OPENEDX: 621672204142.dkr.ecr.us-east-2.amazonaws.com/openedx:latest
-      DOCKER_IMAGE_MFE: 621672204142.dkr.ecr.us-east-2.amazonaws.com/mfe:latest
-      DOCKER_IMAGE_CREDENTIALS: 621672204142.dkr.ecr.us-east-2.amazonaws.com/credentials:latest
-      DOCKER_IMAGE_BACKUP: 621672204142.dkr.ecr.us-east-2.amazonaws.com/hastexo_backup:latest
+      DOCKER_IMAGE_MFE: 621672204142.dkr.ecr.us-east-2.amazonaws.com/openedx_mfe:latest
+      DOCKER_IMAGE_CREDENTIALS: 621672204142.dkr.ecr.us-east-2.amazonaws.com/openedx_credentials:latest
+      DOCKER_IMAGE_BACKUP: 621672204142.dkr.ecr.us-east-2.amazonaws.com/openedx_backup:latest
 
     steps:
       - name: Checkout
