@@ -183,6 +183,7 @@ jobs:
       #          OPENEDX_AWS_ACCESS_KEY: ABDCE123456789OHBBGQ
       #          OPENEDX_AWS_SECRET_ACCESS_KEY: A123456789srJ8lgel+ABCDEFGHIJKabcdefghijk
       #          S3_STORAGE_BUCKET: mrionline-global-prod-storage
+      #          S3_BACKUP_BUCKET: mrionline-global-prod-backup
       #          S3_CUSTOM_DOMAIN: cdn.app.mrionline.com
       #          S3_REGION: us-east-2
       #
@@ -235,7 +236,8 @@ jobs:
           tutor config save --set BACKUP_DOCKER_IMAGE=${DOCKER_IMAGE_BACKUP} \
                             --set BACKUP_K8S_CRONJOB_HISTORYLIMIT_FAILURE=1 \
                             --set BACKUP_K8S_CRONJOB_HISTORYLIMIT_SUCCESS=3 \
-                            --set BACKUP_K8S_CRONJOB_BACKUP_SCHEDULE="0 0 * * *"
+                            --set BACKUP_K8S_CRONJOB_BACKUP_SCHEDULE="0 0 * * *" \
+                            --set BACKUP_S3_BUCKET_NAME="$S3_BACKUP_BUCKET"
 
       - name: Enable the Discovery plugin
         run: |-
