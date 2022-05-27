@@ -24,7 +24,7 @@ jobs:
       ENVIRONMENT_ID: prod
       NAMESPACE: openedx-prod
       OPENEDX_COMMON_VERSION: open-release/maple.3
-      COMMON_LOGO_URL: https://www.edx.org/images/logos/edx-logo-elm.svg
+      COMMON_LOGO_URL: "https://www.edx.org/images/logos/edx-logo-elm.svg"
 
     steps:
       - name: Checkout
