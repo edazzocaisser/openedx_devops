@@ -233,10 +233,6 @@ jobs:
                             --set BACKUP_K8S_CRONJOB_HISTORYLIMIT_SUCCESS=3 \
                             --set BACKUP_K8S_CRONJOB_BACKUP_SCHEDULE="0 0 * * *"
 
-          # See the github README for additional AWS S3 configuration
-          # options in the event that you are not also installing
-          # hastexo/tutor-contrib-s3 (included above )
-
       - name: Enable the Discovery plugin
         run: |-
           pip install tutor-discovery
