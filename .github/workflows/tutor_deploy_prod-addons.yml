@@ -275,3 +275,28 @@ jobs:
                             --set CREDENTIALS_LOGO_WHITE_URL_SVG="" \
                             --set CREDENTIALS_FAVICON_URL="${COMMON_LOGO_URL}" \
 
+      - name: Enable the Xqueue plugin
+        run: |-
+          pip install tutor-xqueue
+          tutor plugins enable xqueue
+          tutor config save
+
+      - name: Enable the Notes plugin
+        run: |-
+          pip install tutor-notes
+          tutor plugins enable notes
+          tutor config save
+
+      - name: Configure 3rd Party Authentication
+        run:  |-
+          tutor config save --set OPENEDX_FACEBOOK_APP_ID="${{ secrets.FACEBOOK_APP_ID }}" \
+                            --set OPENEDX_FACEBOOK_APP_SECRET="${{ secrets.FACEBOOK_APP_SECRET }}"
+
+      - name: Enable and configure ecommerce plugin
+        run: |-
+          pip install tutor-ecommerce
+          tutor plugins enable ecommerce
+          tutor config save --set ECOMMERCE_ENABLE_IDENTITY_VERIFICATION=false \
+                            --set ECOMMERCE_ENABLED_CLIENT_SIDE_PAYMENT_PROCESSORS=[] \
+                            --set ECOMMERCE_CURRENCY=USD
+
