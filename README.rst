@@ -85,6 +85,24 @@ This repository was generated using `Cookiecutter <https://cookiecutter.readthed
     - latest stable
   * - `Tutor Plugin: Object storage for Open edX with S3 <https://github.com/hastexo/tutor-contrib-s3>`_
     - v0.2.2
+  * - `Tutor Plugin: Backup & Restore <https://github.com/hastexo/tutor-contrib-backup>`_
+    - v0.0.6
+  * - `Tutor Plugin: Credentials Application <https://github.com/lpm0073/tutor-contrib-credentials>`_
+    - v13.0.2
+  * - `Tutor Plugin: Discovery Service <https://github.com/overhangio/tutor-discovery>`_
+    - latest stable
+  * - `Tutor Plugin: Micro Front-end Service <https://github.com/overhangio/tutor-mfe>`_
+    - latest stable
+  * - `Tutor Plugin: Ecommerce Service <https://github.com/overhangio/tutor-ecommerce>`_
+    - latest stable
+  * - `Tutor Plugin: Xqueue Service <https://github.com/overhangio/tutor-xqueue>`_
+    - latest stable
+  * - `Tutor Plugin: Notes Service <https://github.com/overhangio/tutor-notes>`_
+    - latest stable
+  * - `Tutor Plugin: Discussion Forum Service <https://github.com/overhangio/tutor-forum>`_
+    - latest stable
+  * - `Tutor Plugin: Android Application <https://github.com/overhangio/tutor-android>`_
+    - latest stable
   * - `Kubernetes Cluster <https://kubernetes.io/>`_
     - 1.22
   * - `Terraform <https://www.terraform.io/>`_
