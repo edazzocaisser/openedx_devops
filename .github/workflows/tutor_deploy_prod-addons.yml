@@ -251,3 +251,27 @@ jobs:
           tutor config save --set MFE_DOCKER_IMAGE=${DOCKER_IMAGE_MFE} \
                             --set MFE_ENABLE_HTTPS=true
 
+
+      # IMPORTANT: you must run tutor_build_credentials first.
+      - name: Enable and configure credentials plugin
+        run: |-
+          pip install git+https://github.com/lpm0073/tutor-contrib-credentials@v13.0.1
+          tutor plugins enable credentials
+          tutor config save --set CREDENTIALS_DOCKER_IMAGE=${DOCKER_IMAGE_CREDENTIALS} \
+                            --set CREDENTIALS_HOST="credentials.${LMS_HOSTNAME}" \
+                            --set CREDENTIALS_LMS_HOST=${LMS_HOSTNAME} \
+                            --set CREDENTIALS_LMS_URL_ROOT=${LMS_HOSTNAME} \
+                            --set CREDENTIALS_LMS_URL=${LMS_HOSTNAME} \
+                            --set CREDENTIALS_CATALOG_API_URL=${LMS_HOSTNAME} \
+                            --set CREDENTIALS_PRIVACY_POLICY_URL="${LMS_HOSTNAME}/pricacy-policy" \
+                            --set CREDENTIALS_SECRET_KEY="${TUTOR_OPENEDX_SECRET_KEY}" \
+                            --set CREDENTIALS_SITE_NAME="Your School" \
+                            --set CREDENTIALS_TOS_URL="${LMS_HOSTNAME}/tos" \
+                            --set CREDENTIALS_LOGO_URL="${COMMON_LOGO_URL}" \
+                            --set CREDENTIALS_LOGO_URL_PNG="${COMMON_LOGO_URL}" \
+                            --set CREDENTIALS_LOGO_URL_SVG="" \
+                            --set CREDENTIALS_LOGO_WHITE_URL="${COMMON_LOGO_URL}" \
+                            --set CREDENTIALS_LOGO_WHITE_URL_PNG="${COMMON_LOGO_URL}" \
+                            --set CREDENTIALS_LOGO_WHITE_URL_SVG="" \
+                            --set CREDENTIALS_FAVICON_URL="${COMMON_LOGO_URL}" \
+
