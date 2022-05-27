@@ -21,10 +21,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      COMMON_LOGO_URL: https://www.edx.org/images/logos/edx-logo-elm.svg
       ENVIRONMENT_ID: prod
       NAMESPACE: openedx-prod
       OPENEDX_COMMON_VERSION: open-release/maple.3
+      COMMON_LOGO_URL: https://www.edx.org/images/logos/edx-logo-elm.svg
       DOCKER_IMAGE_OPENEDX: 621672204142.dkr.ecr.us-east-2.amazonaws.com/openedx:latest
       DOCKER_IMAGE_MFE: 621672204142.dkr.ecr.us-east-2.amazonaws.com/mfe:latest
       DOCKER_IMAGE_CREDENTIALS: 621672204142.dkr.ecr.us-east-2.amazonaws.com/credentials:latest
@@ -222,6 +222,7 @@ jobs:
                             --set S3_CUSTOM_DOMAIN="$S3_CUSTOM_DOMAIN" \
                             --set S3_REGION="$S3_REGION"
 
+      # IMPORTANT: you must run tutor_build_hastexo_backup first.
       - name: Enable the hastexo Backup & Restore plugin
         run: |-
           pip install git+https://github.com/hastexo/tutor-contrib-backup@v0.0.6
@@ -231,6 +232,10 @@ jobs:
                             --set BACKUP_K8S_CRONJOB_HISTORYLIMIT_FAILURE=1 \
                             --set BACKUP_K8S_CRONJOB_HISTORYLIMIT_SUCCESS=3 \
                             --set BACKUP_K8S_CRONJOB_BACKUP_SCHEDULE="0 0 * * *"
+
+          # See the github README for additional AWS S3 configuration
+          # options in the event that you are not also installing
+          # hastexo/tutor-contrib-s3 (included above )
 
       - name: Enable the Discovery plugin
         run: |-
