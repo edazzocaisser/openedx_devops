@@ -300,3 +300,22 @@ jobs:
                             --set ECOMMERCE_ENABLED_CLIENT_SIDE_PAYMENT_PROCESSORS=[] \
                             --set ECOMMERCE_CURRENCY=USD
 
+      - name: Configure Discussion Forum
+        run:  |-
+          pip install tutor-forum
+          tutor plugins enable forum
+          tutor config save
+
+       see: https://github.com/overhangio/tutor-android
+      - name: Configure Android plugin
+        run:  |-
+          pip install tutor-android
+          tutor plugins enable android
+          tutor config save
+
+      - name: Generate Tutor Config
+        run:  |-
+          export TUTOR_JWT_RSA_PRIVATE_KEY=\'$(sed -E 's/$/\n/g' ./jwt_private_key)\'
+          tutor config save
+          cat $TUTOR_ROOT/config.yml
+
