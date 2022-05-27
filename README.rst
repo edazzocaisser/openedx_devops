@@ -84,7 +84,7 @@ This repository was generated using `Cookiecutter <https://cookiecutter.readthed
   * - `Tutor Docker-based Open edX Installer <https://docs.tutor.overhang.io/>`_
     - latest stable
   * - `Tutor Plugin: Object storage for Open edX with S3 <https://github.com/hastexo/tutor-contrib-s3>`_
-    - v0.2.1
+    - v0.2.2
   * - `Kubernetes Cluster <https://kubernetes.io/>`_
     - 1.22
   * - `Terraform <https://www.terraform.io/>`_
