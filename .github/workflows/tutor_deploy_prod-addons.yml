@@ -21,10 +21,14 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
+      COMMON_LOGO_URL: https://www.edx.org/images/logos/edx-logo-elm.svg
       ENVIRONMENT_ID: prod
       NAMESPACE: openedx-prod
       OPENEDX_COMMON_VERSION: open-release/maple.3
-      COMMON_LOGO_URL: "https://www.edx.org/images/logos/edx-logo-elm.svg"
+      DOCKER_IMAGE_OPENEDX: 621672204142.dkr.ecr.us-east-2.amazonaws.com/openedx:latest
+      DOCKER_IMAGE_MFE: 621672204142.dkr.ecr.us-east-2.amazonaws.com/mfe:latest
+      DOCKER_IMAGE_CREDENTIALS: 621672204142.dkr.ecr.us-east-2.amazonaws.com/credentials:latest
+      DOCKER_IMAGE_BACKUP: 621672204142.dkr.ecr.us-east-2.amazonaws.com/hastexo_backup:latest
 
     steps:
       - name: Checkout
@@ -223,14 +227,10 @@ jobs:
           pip install git+https://github.com/hastexo/tutor-contrib-backup@v0.0.6
           tutor plugins enable backup
 
-          tutor config save --set BACKUP_DOCKER_IMAGE=${DOCKER_IMAGE_BACKUP} \        # IMPORTANT: you must run tutor_build_hastexo_backup first.
-                            --set BACKUP_K8S_CRONJOB_HISTORYLIMIT_FAILURE=1 \         # this is the plugin default value
-                            --set BACKUP_K8S_CRONJOB_HISTORYLIMIT_SUCCESS=3 \         # this is the plugin default value
-                            --set BACKUP_K8S_CRONJOB_BACKUP_SCHEDULE="0 0 * * *"      # (default "0 0 * * *", once a day at midnight)
-
-          # See the github README for additional AWS S3 configuration
-          # options in the event that you are not also installing
-          # hastexo/tutor-contrib-s3 (included above )
+          tutor config save --set BACKUP_DOCKER_IMAGE=${DOCKER_IMAGE_BACKUP} \
+                            --set BACKUP_K8S_CRONJOB_HISTORYLIMIT_FAILURE=1 \
+                            --set BACKUP_K8S_CRONJOB_HISTORYLIMIT_SUCCESS=3 \
+                            --set BACKUP_K8S_CRONJOB_BACKUP_SCHEDULE="0 0 * * *"
 
       - name: Enable the Discovery plugin
         run: |-
