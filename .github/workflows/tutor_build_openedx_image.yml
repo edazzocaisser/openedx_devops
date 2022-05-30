@@ -35,7 +35,7 @@ jobs:
           aws-region: us-east-2
 
       - name: Build the image and upload to AWS ECR
-        uses: openedx-actions/tutor-plugin-build-openedx@v0.1.6
+        uses: openedx-actions/tutor-plugin-build-openedx@v0.1.6b
         with:
           custom-theme-repository: 'lpm0073/edx-theme-example'
           custom-theme-repository-ref: 'main'
