@@ -59,7 +59,7 @@ runs:
   using: "composite"
   steps:
     - name: Test boolean input
-      if: ${{ inputs.tutor-enable-plugin-s3 }}
+      if: ${{ inputs.tutor-enable-plugin-s3 == true }}
       run: echo "tutor-enable-plugin-s3 is GO"
       shell: bash
 
@@ -67,7 +67,7 @@ runs:
       uses: actions/checkout@v3.0.2
 
     - name: Enable Tutor Plugins
-      if: ${{ inputs.tutor-enable-plugin-s3 }}
+      if: ${{ inputs.tutor-enable-plugin-s3 == true }}
       uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin_s3
 
     - name: Enable the hastexo Backup & Restore plugin
