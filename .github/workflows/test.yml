@@ -27,6 +27,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
 
+      - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-s3
       - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-backup
       - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-discovery
       - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-mfe

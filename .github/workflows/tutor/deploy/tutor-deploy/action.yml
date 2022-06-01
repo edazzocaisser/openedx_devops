@@ -12,34 +12,32 @@ description:
 branding:
   icon: 'cloud'
   color: 'orange'
-  inputs:
-    environment-id:
-      description: 'The Open edX platform environment. Examples: prod, qa, dev'
-      required: true
-      type: string
-    namespace:
-      description: 'The Kubernetes namesapce to which the Open edX platform environment will be deployed. Example: openedx-prod'
-      required: true
-      type: string
-    openedx-common-version:
-      description: 'The named release of Open edX platform to deploy. Example: open-release/maple.3'
-      required: true
-      type: string
-    aws-ses-iam-key:
-      description: 'AWS SES IAM key'
-      required: false
-      default: 'SET-ME-PLEASE'
-    aws-ses-iam-secret:
-      description: 'AWS SES IAM secret'
-      required: false
-      default: 'SET-ME-PLEASE'
+inputs:
+  environment-id:
+    description: 'The Open edX platform environment. Examples: prod, qa, dev'
+    required: true
+    type: string
+  namespace:
+    description: 'The Kubernetes namesapce to which the Open edX platform environment will be deployed. Example: openedx-prod'
+    required: true
+    type: string
+  openedx-common-version:
+    description: 'The named release of Open edX platform to deploy. Example: open-release/maple.3'
+    required: true
+    type: string
+  aws-ses-iam-key:
+    description: 'AWS SES IAM key'
+    required: false
+    default: 'SET-ME-PLEASE'
+  aws-ses-iam-secret:
+    description: 'AWS SES IAM secret'
+    required: false
+    default: 'SET-ME-PLEASE'
 runs:
   using: "composite"
   env:
     ENVIRONMENT_ID: prod
     NAMESPACE: openedx-prod
-    OPENEDX_COMMON_VERSION: open-release/maple.3
-
   steps:
     - name: Checkout
       uses: actions/checkout@v3.0.2
@@ -137,5 +135,5 @@ runs:
 
     - name: Create admin user
       run:  |-
-        $(kubectl get secret admin-edx -n $NAMESPACE  -o json | jq  '.data | map_values(@base64d)' |   jq -r 'keys[] as $k | "export \($k|ascii_upcase)=\(.[$k])"')
+        $(kubectl get secret admin-edx -n ${{ inputs.namespace }}  -o json | jq  '.data | map_values(@base64d)' |   jq -r 'keys[] as $k | "export \($k|ascii_upcase)=\(.[$k])"')
         tutor k8s createuser --password "$ADMIN_PASSWORD" --staff --superuser "$ADMIN_USER" admin@mrionline.com
