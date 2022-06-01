@@ -80,7 +80,7 @@ runs:
         echo "S3 is true"
       shell: bash
 
-    - name: Enable Tutor Plugins
+    - name: Enable the AWS S3 plugin
       if: ${{ inputs.tutor-enable-plugin-s3 == 'true' }}
       uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin_s3
 

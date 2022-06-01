@@ -27,18 +27,15 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
 
-      - name: Test enable plugins
-        uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugins
-        with:
-          tutor-enable-plugin-s3: true
-          tutor-enable-plugin-backup: false
-          tutor-enable-plugin-discovery: false
-          tutor-enable-plugin-mfe: false
-          tutor-enable-plugin-credentials: false
-          tutor-enable-plugin-xqueue: false
-          tutor-enable-plugin-notes: false
-          tutor-enable-plugin-ecommerce: false
-          tutor-enable-plugin-forum: false
+      - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-backup
+      - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-discovery
+      - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-mfe
+      - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-credentials
+      - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-xqueue
+      - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-notes
+      - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-ecommerce
+      - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-forum
+
 
       #- name: Test init
       #  uses: ./.github/workflows/tutor/deploy/tutor-deploy-init
