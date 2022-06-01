@@ -28,6 +28,9 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Checkout
+      uses: actions/checkout@v3.0.2
+
     - name: Configure Discussion Forum
       run:  |-
         pip install tutor-forum

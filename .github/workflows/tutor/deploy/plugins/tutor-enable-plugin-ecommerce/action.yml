@@ -32,6 +32,9 @@ runs:
     NAMESPACE: openedx-prod
     OPENEDX_COMMON_VERSION: open-release/maple.3
   steps:
+    - name: Checkout
+      uses: actions/checkout@v3.0.2
+
     # retrieve the MySQL connection parameters that we created in Terraform
     # and then stored in Kubernetes secrets. These include:
     #   MYSQL_HOST: mysql.app.mrionline.com

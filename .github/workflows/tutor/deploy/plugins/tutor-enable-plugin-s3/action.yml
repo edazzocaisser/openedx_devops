@@ -15,8 +15,6 @@ branding:
 inputs:
 runs:
   using: "composite"
-  env:
-    DOCKER_IMAGE_BACKUP: 621672204142.dkr.ecr.us-east-2.amazonaws.com/openedx_backup:latest
   steps:
     - name: Checkout
       uses: actions/checkout@v3.0.2
