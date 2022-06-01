@@ -37,7 +37,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
 
-      - name: Test init
+      - name: Tutor deploy init
         uses: ./.github/workflows/tutor/deploy/tutor-deploy-init
         with:
           environment-id: prod
@@ -81,6 +81,8 @@ jobs:
         if: ${{ env.ENABLE_CREDENTIALS == 'true' }}
         with:
           namespace: openedx-prod
+          aws-ecr-uri: 621672204142.dkr.ecr.us-east-2.amazonaws.com/openedx_credentials:latest
+          common-logo-url: https://www.edx.org/images/logos/edx-logo-elm.svg
 
       - name: Enable tutor plugin - Xqueue
         uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-xqueue
