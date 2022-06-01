@@ -28,7 +28,7 @@ jobs:
           aws-region: us-east-2
 
       - name: Test init
-        uses: ./.github/workflows/tutor/deploy/tutor_deploy_init
+        uses: ./.github/workflows/tutor/deploy/tutor-deploy-init
         with:
           environment-id: prod
           namespace: openedx-prod
@@ -41,17 +41,18 @@ jobs:
           echo "aws cli version:"
           aws --version
 
-      - name: test whether environment variables are set
-        run: |-
-          echo TUTOR_ROOT=${TUTOR_ROOT}
-          echo TUTOR_VERSION=$(tutor --version | cut -f3 -d' ')
-
-      - name: test whether we can see stuff retrieved from k8s secrets
-        run: |-
-          echo MYSQL_HOST=${MYSQL_HOST}
-          echo MYSQL_PORT=${MYSQL_PORT}
-          echo MYSQL_ROOT_USERNAME=${MYSQL_ROOT_USERNAME}
-          echo MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - name: Test enable plugins
+        uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugins
+        with:
+          tutor-enable-plugin-s3: false
+          tutor-enable-plugin-backup: false
+          tutor-enable-plugin-discovery: false
+          tutor-enable-plugin-mfe: false
+          tutor-enable-plugin-credentials: false
+          tutor-enable-plugin-xqueue: false
+          tutor-enable-plugin-notes: false
+          tutor-enable-plugin-ecommerce: false
+          tutor-enable-plugin-forum: false
 
       - name: test whether we can dump the tutor config to the console
         run: |-

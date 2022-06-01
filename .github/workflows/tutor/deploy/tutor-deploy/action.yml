@@ -25,12 +25,6 @@ branding:
       description: 'The named release of Open edX platform to deploy. Example: open-release/maple.3'
       required: true
       type: string
-    aws-key:
-      description: 'AWS IAM key'
-      required: true
-    aws-secret:
-      description: 'AWS IAM secret'
-      required: true
     aws-ses-iam-key:
       description: 'AWS SES IAM key'
       required: false
@@ -42,7 +36,6 @@ branding:
 runs:
   using: "composite"
   env:
-    DOCKER_IMAGE_BACKUP: 621672204142.dkr.ecr.us-east-2.amazonaws.com/openedx_backup:latest
     ENVIRONMENT_ID: prod
     NAMESPACE: openedx-prod
     OPENEDX_COMMON_VERSION: open-release/maple.3
@@ -61,11 +54,15 @@ runs:
     - name: Enable Tutor plugins
       uses: ./.github/workflows/tutor/deloy/plugins/tutor-enable-plugins
       with:
-        environment-id: ${{ inputs.environment-id }}
-        namespace: ${{ inputs.namespace }}
-        openedx-common-version: ${{ inputs.openedx-common-version }}
-        aws-key: ${{ secrets.aws-key }}
-        aws-secret: ${{ secrets.aws-secret }}
+        tutor-enable-plugin-s3: false
+        tutor-enable-plugin-backup: false
+        tutor-enable-plugin-discovery: false
+        tutor-enable-plugin-mfe: false
+        tutor-enable-plugin-credentials: false
+        tutor-enable-plugin-xqueue: false
+        tutor-enable-plugin-notes: false
+        tutor-enable-plugin-ecommerce: false
+        tutor-enable-plugin-forum: false
 
     # note that the Kubernetes additional config data is locally
     # stored in ci/tutor-deploy/environments/prod/k8s/

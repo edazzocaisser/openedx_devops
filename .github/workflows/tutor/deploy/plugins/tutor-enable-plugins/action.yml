@@ -10,44 +10,86 @@ branding:
   icon: 'cloud'
   color: 'orange'
 inputs:
-  environment-id:
-    description: 'The Open edX platform environment. Examples: prod, qa, dev'
-    required: true
-    type: string
-  namespace:
-    description: 'The Kubernetes namesapce to which the Open edX platform environment will be deployed. Example: openedx-prod'
-    required: true
-    type: string
-  openedx-common-version:
-    description: 'The named release of Open edX platform to deploy. Example: open-release/maple.3'
-    required: true
-    type: string
+  tutor-enable-plugin-s3:
+    description: 'set this to true if you want to install the AWS S3 Storage plugin'
+    required: false
+    type: boolean
+    default: false
+  tutor-enable-plugin-backup:
+    description: 'set this to true if you want to install the Backup & Restore plugin'
+    required: false
+    type: boolean
+    default: false
+  tutor-enable-plugin-discovery:
+    description: 'set this to true if you want to install the Discovery service plugin'
+    required: false
+    type: boolean
+    default: false
+  tutor-enable-plugin-mfe:
+    description: 'set this to true if you want to install the Micro Front-end service plugin'
+    required: false
+    type: boolean
+    default: false
+  tutor-enable-plugin-credentials:
+    description: 'set this to true if you want to install the Credentials service plugin'
+    required: false
+    type: boolean
+    default: false
+  tutor-enable-plugin-xqueue:
+    description: 'set this to true if you want to install the Xqueue service plugin'
+    required: false
+    type: boolean
+    default: false
+  tutor-enable-plugin-notes:
+    description: 'set this to true if you want to install the Notes service plugin'
+    required: false
+    type: boolean
+    default: false
+  tutor-enable-plugin-ecommerce:
+    description: 'set this to true if you want to install the Ecommerce service plugin'
+    required: false
+    type: boolean
+    default: false
+  tutor-enable-plugin-forum:
+    description: 'set this to true if you want to install the Discussion Forum service plugin'
+    required: false
+    type: boolean
+    default: false
 runs:
   using: "composite"
   steps:
     - name: Enable Tutor Plugins
+      if: ${{ inputs.tutor-enable-plugin-s3 }}
       uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin_s3
 
     - name: Enable the hastexo Backup & Restore plugin
+      if: ${{ inputs.tutor-enable-plugin-backup }}
       uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-backup
 
     - name: Enable the Discovery plugin
+      if: ${{ inputs.tutor-enable-plugin-discovery }}
       uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-discovery
 
     - name: Enable the MFE plugin
+      if: ${{ inputs.tutor-enable-plugin-mfe }}
       uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-mfe
 
     - name: Enable and configure credentials plugin
+      if: ${{ inputs.tutor-enable-plugin-credentials }}
       uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-credentials
 
     - name: Enable the Xqueue plugin
+      if: ${{ inputs.tutor-enable-plugin-xqueue }}
       uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-xqueue
 
     - name: Enable the Notes plugin
+      if: ${{ inputs.tutor-enable-plugin-notes }}
       uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-notes
 
     - name: Enable and configure ecommerce plugin
+      if: ${{ inputs.tutor-enable-plugin-ecommerce }}
       uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-ecommerce
 
     - name: Configure Discussion Forum
+      if: ${{ inputs.tutor-enable-plugin-forum }}
       uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-forum
