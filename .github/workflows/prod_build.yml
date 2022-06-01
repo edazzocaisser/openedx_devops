@@ -44,20 +44,20 @@ jobs:
           aws-region: ${AWS_REGION}
 
       - name: Build Backup
-        uses: ./.github/workflows/tutor_build_backup
+        uses: ./.github/workflows/tutor/build/tutor_build_backup
 
       - name: Build Credentials
-        uses: ./.github/workflows/tutor_build_credentials
+        uses: ./.github/workflows/tutor/build/tutor_build_credentials
 
       - name: Build MFE
-        uses: ./.github/workflows/tutor_build_mfe
+        uses: ./.github/workflows/tutor/build/tutor_build_mfe
         with:
           subdomain: ${SUBDOMAIN}
           domain-name: ${DOMAIN_NAME}
           site-name: ${SITE_NAME}
 
       - name: Build openedx
-        uses: ./.github/workflows/tutor_build_openedx
+        uses: ./.github/workflows/tutor/build/tutor_build_openedx
         with:
           custom-theme-repository: ${{ inputs.custom-theme-repository }}
           custom-theme-repository-ref: ${{ inputs.custom-theme-repository-ref }}
