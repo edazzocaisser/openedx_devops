@@ -1,0 +1,40 @@
+#------------------------------------------------------------------------------
+# written by: mcdaniel
+# date: june-2022
+#
+# usage: Use tutor to enable the Open edX Micro Front-end service plugin
+#        Called from tutor_deploy.yml
+#
+# FIX NOTE: move to Github Actions marketplace
+#------------------------------------------------------------------------------
+name: enable MFE plugin for tutor
+
+on:
+  workflow_call:
+  inputs:
+    environment-id:
+      description: 'The Open edX platform environment. Examples: prod, qa, dev'
+      required: true
+      type: string
+    namespace:
+      description: 'The Kubernetes namesapce to which the Open edX platform environment will be deployed. Example: openedx-prod'
+      required: true
+      type: string
+    openedx-common-version:
+      description: 'The named release of Open edX platform to deploy. Example: open-release/maple.3'
+      required: true
+      type: string
+
+jobs:
+  reusable_workflow_job:
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_IMAGE_MFE: 621672204142.dkr.ecr.us-east-2.amazonaws.com/openedx_mfe:latest
+
+    steps:
+      - name: Enable the MFE plugin
+        run: |-
+          pip install tutor-mfe
+          tutor plugins enable mfe
+          tutor config save --set MFE_DOCKER_IMAGE=${DOCKER_IMAGE_MFE} \
+                            --set MFE_ENABLE_HTTPS=true

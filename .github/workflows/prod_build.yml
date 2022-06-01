@@ -1,0 +1,71 @@
+#------------------------------------------------------------------------------
+# written by: mcdaniel
+# date: feb-2022
+#
+# usage: top-level workflow. Initiated manually from Github Actions console page
+#        Builds all Docker containers.
+#------------------------------------------------------------------------------
+name: Deploy Open edX prod to Kubernetes
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      SUBDOMAIN: app
+      DOMAIN_NAME: mrionline.com
+      SITE_NAME: MRI Online
+      AWS_REGION: us-east-2
+
+      CUSTOM_THEME_REPOSITORY: lpm0073/edx-theme-example
+      CUSTOM_THEME_REPOSITORY_REF: main
+
+      CUSTOM_PLUGIN_REPOSITORY: openedx-plugin-example
+      CUSTOM_PLUGIN_REPOSITORY_ORGANIZATION: lpm0073
+      CUSTOM_PLUGIN_REPOSITORY_REF: main
+
+      CUSTOM_XBLOCK_REPOSITORY: edx-ora2
+      CUSTOM_XBLOCK_REPOSITORY_ORGANIZATION: openedx
+      CUSTOM_XBLOCK_REPOSITORY_REF: master
+
+    steps:
+      - uses: actions/checkout@v3.0.2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1.6.1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${AWS_REGION}
+
+      - name: Build Backup
+        uses: ./.github/workflows/tutor/build/tutor_build_backup
+
+      - name: Build Credentials
+        uses: ./.github/workflows/tutor/build/tutor_build_credentials
+
+      - name: Build MFE
+        uses: ./.github/workflows/tutor/build/tutor_build_mfe
+        with:
+          subdomain: ${SUBDOMAIN}
+          domain-name: ${DOMAIN_NAME}
+          site-name: ${SITE_NAME}
+
+      - name: Build openedx
+        uses: ./.github/workflows/tutor/build/tutor_build_openedx
+        with:
+          custom-theme-repository: ${{ inputs.custom-theme-repository }}
+          custom-theme-repository-ref: ${{ inputs.custom-theme-repository-ref }}
+
+          custom-plugin-repository: ${{ inputs.custom-plugin-repository }}
+          custom-plugin-repository-organization: ${{ inputs.custom-plugin-repository-organization }}
+          custom-plugin-repository-ref: ${{ inputs.custom-plugin-repository-ref }}
+
+          custom-xblock-repository: ${{ inputs.custom-xblock-repository }}
+          custom-xblock-repository-organization: ${{ inputs.custom-xblock-repository-organization }}
+          custom-xblock-repository-ref: ${{ inputs.custom-xblock-repository-ref }}

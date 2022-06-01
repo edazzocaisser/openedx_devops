@@ -1,0 +1,44 @@
+#------------------------------------------------------------------------------
+# written by: mcdaniel
+# date: feb-2022
+#
+# usage: top-level workflow. Initiated manually from Github Actions console page
+#        Deploys a Tutor-created openedx Docker image to the Kubernetes cluster.
+#        The openedx docker image is created by a Github action in tutor-build.git.
+#------------------------------------------------------------------------------
+name: Test workflows
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test init
+        uses: ./.github/workflows/tutor/deploy/tutor_deploy_init
+        with:
+          environment-id: prod
+          namespace: openedx-prod
+          openedx-common-version: open-release/maple.3
+          aws-key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: test whether installed software works here
+      - run: |-
+          kubectl version --short
+          echo
+          echo "aws cli version:"
+          aws --version
+
+      - name: test whether environment variables are set
+      - run: |-
+          echo TUTOR_ROOT=${TUTOR_ROOT}
+          echo TUTOR_VERSION=$(tutor --version | cut -f3 -d' ')
+
+      - name: test whether we can see stuff retrieved from k8s secrets
+      - run: |-
+          echo MYSQL_HOST=${MYSQL_HOST}
+          echo MYSQL_PORT=${MYSQL_PORT}
+          echo MYSQL_ROOT_USERNAME=${MYSQL_ROOT_USERNAME}
+          echo MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
