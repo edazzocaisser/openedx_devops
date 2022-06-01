@@ -13,13 +13,6 @@ branding:
   icon: 'cloud'
   color: 'orange'
 inputs:
-  aws-key:
-    description: 'AWS IAM key'
-    required: true
-  aws-secret:
-    description: 'AWS IAM secret'
-    required: true
-
 runs:
   using: "composite"
   env:
@@ -66,8 +59,8 @@ runs:
         pip install git+https://github.com/hastexo/tutor-contrib-s3@v0.2.2
         tutor plugins enable s3
 
-        tutor config save --set OPENEDX_AWS_ACCESS_KEY="${{ inputs.aws-key }}" \
-                          --set OPENEDX_AWS_SECRET_ACCESS_KEY="${{ inputs.aws-secret }}" \
+        tutor config save --set OPENEDX_AWS_ACCESS_KEY="$OPENEDX_AWS_ACCESS_KEY" \
+                          --set OPENEDX_AWS_SECRET_ACCESS_KEY="$OPENEDX_AWS_SECRET_ACCESS_KEY" \
                           --set OPENEDX_AWS_QUERYSTRING_AUTH="False" \
                           --set OPENEDX_AWS_S3_SECURE_URLS="False" \
                           --set S3_STORAGE_BUCKET="$S3_STORAGE_BUCKET" \

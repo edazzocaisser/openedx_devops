@@ -27,9 +27,6 @@ runs:
   steps:
     - name: Enable Tutor Plugins
       uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin_s3
-      with:
-        aws-key: ${{ secrets.aws-key }}
-        aws-secret: ${{ secrets.aws-secret }}
 
     - name: Enable the hastexo Backup & Restore plugin
       uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-backup
