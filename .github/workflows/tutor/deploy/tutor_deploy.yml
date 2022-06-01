@@ -53,7 +53,7 @@ jobs:
         uses: actions/checkout@v3.0.2
 
       - name: Initialize environment
-        uses: ./.github/workflows/tutor/deploy/tutor_deploy_init
+        uses: ./.github/workflows/tutor/deploy/tutor-deploy-init
         with:
           environment-id: prod
           namespace: openedx-prod
@@ -62,7 +62,7 @@ jobs:
           aws-secret: ${{ secrets.aws-secret }}
 
       - name: Enable Tutor plugins
-        uses: ./.github/workflows/tutor/deloy/plugins/tutor_enable_plugins
+        uses: ./.github/workflows/tutor/deloy/plugins/tutor-enable-plugins
         with:
           environment-id: ${{ inputs.environment-id }}
           namespace: ${{ inputs.namespace }}
@@ -84,7 +84,7 @@ jobs:
       # and AWS is neurotic about any changes to the config.
       # ---------------------------------------------------------------------------------
       - name: Setup AWS SES over SMTP
-        uses: ./.github/workflows/tutor/deploy/backend/smtp
+        uses: ./.github/workflows/tutor/deploy/backend/tutor-configure-smtp
         with:
           aws-ses-iam-key: ${{ secrets.aws-ses-iam-key }}
           aws-ses-iam-secret: ${{ secrets.aws-ses-iam-secret }}
