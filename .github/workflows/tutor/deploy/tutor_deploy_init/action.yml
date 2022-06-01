@@ -89,7 +89,7 @@ run:
     - name: fetch Redis configuration from Kubernetes secrets
       run: |-
         echo "TUTOR_RUN_REDIS=false" >> $GITHUB_ENV
-        kubectl get secret redis -n $${{ inputs.namespace }}  -o json | jq  '.data | map_values(@base64d)' | jq -r 'keys[] as $k | "TUTOR_\($k|ascii_upcase)=\(.[$k])"' >> $GITHUB_ENV
+        kubectl get secret redis -n ${{ inputs.namespace }}  -o json | jq  '.data | map_values(@base64d)' | jq -r 'keys[] as $k | "TUTOR_\($k|ascii_upcase)=\(.[$k])"' >> $GITHUB_ENV
 
 
     - name: Configure 3rd Party Authentication
@@ -111,7 +111,7 @@ run:
     # see: https://github.com/Medality-Health/openedx_devops/blob/main/terraform/modules/mysql/main.tf
     - name: fetch MySQL configuration from Kubernetes secrets
       run: |-
-        kubectl get secret mysql-root -n $${{ inputs.namespace }}  -o json | jq  '.data | map_values(@base64d)' | jq -r 'keys[] as $k | "TUTOR_\($k|ascii_upcase)=\(.[$k])"' >> $GITHUB_ENV
+        kubectl get secret mysql-root -n ${{ inputs.namespace }}  -o json | jq  '.data | map_values(@base64d)' | jq -r 'keys[] as $k | "TUTOR_\($k|ascii_upcase)=\(.[$k])"' >> $GITHUB_ENV
 
     #------------------------------------------------------------------------
     # II. Get all of our backend configuration data that was stored in
@@ -126,7 +126,7 @@ run:
     # see: https://github.com/Medality-Health/openedx_devops/blob/main/terraform/modules/kubernetes_secrets/main.tf
     - name: Fetch JWT token
       run: |-
-        kubectl get secret jwt -n $${{ inputs.namespace }} -o json |  jq  '.data| map_values(@base64d)'  | jq -r 'keys[] as $k | "\(.[$k])"' > jwt_private_key
+        kubectl get secret jwt -n ${{ inputs.namespace }} -o json |  jq  '.data| map_values(@base64d)'  | jq -r 'keys[] as $k | "\(.[$k])"' > jwt_private_key
 
     - nam: Generate JWT private key
       run: |-
@@ -155,7 +155,7 @@ run:
     # see: https://github.com/Medality-Health/openedx_devops/blob/main/terraform/modules/kubernetes_secrets/main.tf
     - name: fetch EDX Secret Key from Kubernetes secrets
       run: |-
-        kubectl get secret edx-secret-key -n $${{ inputs.namespace }}  -o json | jq  '.data | map_values(@base64d)' | jq -r 'keys[] as $k | "TUTOR_\($k|ascii_upcase)=\(.[$k])"' >> $GITHUB_ENV
+        kubectl get secret edx-secret-key -n ${{ inputs.namespace }}  -o json | jq  '.data | map_values(@base64d)' | jq -r 'keys[] as $k | "TUTOR_\($k|ascii_upcase)=\(.[$k])"' >> $GITHUB_ENV
 
     - name: Load environment specific settings (direct)
       run: |-
@@ -168,10 +168,10 @@ run:
       run: |-
         # We don't want to run these services as we are using the Kubernetes ingress instead.
         echo "TUTOR_RUN_MYSQL=false" >> $GITHUB_ENV
-        echo "TUTOR_ID=tutor-$${{ inputs.namespace }}" >> $GITHUB_ENV
+        echo "TUTOR_ID=tutor-${{ inputs.namespace }}" >> $GITHUB_ENV
         echo "TUTOR_LMS_HOST=$LMS_HOSTNAME" >> $GITHUB_ENV
         echo "TUTOR_CMS_HOST=$CMS_HOSTNAME" >> $GITHUB_ENV
-        echo "TUTOR_K8S_${{ inputs.namespace }}=$${{ inputs.namespace }}" >> $GITHUB_ENV
+        echo "TUTOR_K8S_${{ inputs.namespace }}=${{ inputs.namespace }}" >> $GITHUB_ENV
         echo "TUTOR_DOCKER_IMAGE_OPENEDX=$DOCKER_IMAGE_OPENEDX" >> $GITHUB_ENV
         echo "TUTOR_RUN_CADDY=false" >> $GITHUB_ENV
         echo "TUTOR_RUN_NGINX=false" >> $GITHUB_ENV
