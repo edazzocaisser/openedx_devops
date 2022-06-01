@@ -36,3 +36,4 @@ runs:
         pip install tutor-forum
         tutor plugins enable forum
         tutor config save
+      shell: bash

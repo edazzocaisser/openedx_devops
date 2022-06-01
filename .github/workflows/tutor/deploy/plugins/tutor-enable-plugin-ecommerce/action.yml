@@ -50,6 +50,7 @@ runs:
     - name: fetch MySQL configuration from Kubernetes secrets
       run: |-
         kubectl get secret mysql-ecommerce -n $NAMESPACE  -o json | jq  '.data | map_values(@base64d)' | jq -r 'keys[] as $k | "TUTOR_\($k|ascii_upcase)=\(.[$k])"' >> $GITHUB_ENV
+      shell: bash
 
     - name: Enable and configure ecommerce plugin
       run: |-
@@ -58,3 +59,4 @@ runs:
         tutor config save --set ECOMMERCE_ENABLE_IDENTITY_VERIFICATION=false \
                           --set ECOMMERCE_ENABLED_CLIENT_SIDE_PAYMENT_PROCESSORS=[] \
                           --set ECOMMERCE_CURRENCY=USD
+      shell: bash

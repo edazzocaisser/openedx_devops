@@ -47,9 +47,11 @@ runs:
     - name: fetch MySQL configuration from Kubernetes secrets
       run: |-
         kubectl get secret mysql-notes -n $NAMESPACE  -o json | jq  '.data | map_values(@base64d)' | jq -r 'keys[] as $k | "TUTOR_\($k|ascii_upcase)=\(.[$k])"' >> $GITHUB_ENV
+      shell: bash
 
     - name: Enable the Notes plugin
       run: |-
         pip install tutor-notes
         tutor plugins enable notes
         tutor config save
+      shell: bash

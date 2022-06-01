@@ -39,3 +39,4 @@ runs:
         tutor plugins enable mfe
         tutor config save --set MFE_DOCKER_IMAGE=${DOCKER_IMAGE_MFE} \
                           --set MFE_ENABLE_HTTPS=true
+      shell: bash

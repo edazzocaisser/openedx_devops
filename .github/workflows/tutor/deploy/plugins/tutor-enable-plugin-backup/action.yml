@@ -35,3 +35,4 @@ runs:
                           --set BACKUP_K8S_CRONJOB_HISTORYLIMIT_SUCCESS=3 \
                           --set BACKUP_K8S_CRONJOB_BACKUP_SCHEDULE="0 0 * * *" \
                           --set BACKUP_S3_BUCKET_NAME="$S3_BACKUP_BUCKET"
+      shell: bash

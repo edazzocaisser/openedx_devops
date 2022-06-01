@@ -49,6 +49,7 @@ runs:
     - name: fetch MySQL configuration from Kubernetes secrets
       run: |-
         kubectl get secret mysql-credentials -n $NAMESPACE  -o json | jq  '.data | map_values(@base64d)' | jq -r 'keys[] as $k | "TUTOR_\($k|ascii_upcase)=\(.[$k])"' >> $GITHUB_ENV
+      shell: bash
 
     # IMPORTANT: you must run tutor_build_credentials first.
     - name: Enable and configure credentials plugin
@@ -72,3 +73,4 @@ runs:
                           --set CREDENTIALS_LOGO_WHITE_URL_PNG="${COMMON_LOGO_URL}" \
                           --set CREDENTIALS_LOGO_WHITE_URL_SVG="" \
                           --set CREDENTIALS_FAVICON_URL="${COMMON_LOGO_URL}" \
+      shell: bash
