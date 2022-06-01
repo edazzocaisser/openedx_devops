@@ -1,0 +1,77 @@
+#------------------------------------------------------------------------------
+# written by: Miguel Afonso
+#             https://www.linkedin.com/in/mmafonso/
+#
+# date: Aug-2021
+#
+# usage: Creates a Tutor Docker image using the latest stable version of Open edX.
+#        additionally installs
+#        - custom theme
+#        - plugin
+#        - various Xblocks
+#        Registers the new container in AWS ECR.
+#------------------------------------------------------------------------------
+name: Build openedx Image
+
+on:
+  workflow_call:
+  inputs:
+    custom-theme-repository:
+      description: 'The Open edX custom theme repository. Example: lpm0073/edx-theme-example'
+      required: false
+      type: string
+      default: lpm0073/edx-theme-example
+    custom-theme-repository-ref:
+      description: 'The git branch of custom theme repository. Example: main'
+      required: false
+      type: string
+      default: main
+    custom-plugin-repository:
+      description: 'The Open edX custom plugin repo. Example: openedx-plugin-example'
+      required: false
+      type: string
+      default: openedx-plugin-example
+    custom-plugin-repository-organization:
+      description: 'The Github Organization containing the custom plugin repo. Example: lpm0073'
+      required: false
+      type: string
+      default: lpm0073
+    custom-plugin-repository-ref:
+      description: 'The git branch of custom plugin repository. Example: main'
+      required: false
+      type: string
+      default: main
+    custom-xblock-repository:
+      description: 'The git repo of the custom Xblock to install. Example: edx-ora2'
+      required: false
+      type: string
+      default: edx-ora2
+    custom-xblock-repository-organization:
+      description: 'The Github Organization containing the custom Xblock repository. Example: openedx'
+      required: false
+      type: string
+      default: openedx
+    custom-xblock-repository-ref:
+      description: 'The git branch of the custom Xblock repo. Example: master'
+      required: false
+      type: string
+      default: master
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build the image and upload to AWS ECR
+        uses: openedx-actions/tutor-plugin-build-openedx@v0.1.8
+        with:
+          custom-theme-repository: ${{ inputs.custom-theme-repository }}
+          custom-theme-repository-ref: ${{ inputs.custom-theme-repository-ref }}
+
+          custom-plugin-repository: ${{ inputs.custom-plugin-repository }}
+          custom-plugin-repository-organization: ${{ inputs.custom-plugin-repository-organization }}
+          custom-plugin-repository-ref: ${{ inputs.custom-plugin-repository-ref }}
+
+          custom-xblock-repository: ${{ inputs.custom-xblock-repository }}
+          custom-xblock-repository-organization: ${{ inputs.custom-xblock-repository-organization }}
+          custom-xblock-repository-ref: ${{ inputs.custom-xblock-repository-ref }}

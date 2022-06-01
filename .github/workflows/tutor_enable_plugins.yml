@@ -2,12 +2,32 @@
 # written by: mcdaniel
 # date: feb-2022
 #
-# usage: deploy a Tutor-created openedx Docker image to the Kubernetes cluster.
-#        The openedx docker image is created by a Github action in tutor-build.git.
+# usage: Enable optional Open edX services for deployment to Kubernetes
 #------------------------------------------------------------------------------
 name: Enable Tutor plugins
 
-on: [workflow_call]
+on:
+  workflow_call:
+  inputs:
+    environment-id:
+      description: 'The Open edX platform environment. Examples: prod, qa, dev'
+      required: true
+      type: string
+    namespace:
+      description: 'The Kubernetes namesapce to which the Open edX platform environment will be deployed. Example: openedx-prod'
+      required: true
+      type: string
+    openedx-common-version:
+      description: 'The named release of Open edX platform to deploy. Example: open-release/maple.3'
+      required: true
+      type: string
+  secrets:
+    aws-key:
+      description: 'AWS IAM key'
+      required: true
+    aws-secret:
+      description: 'AWS IAM secret'
+      required: true
 
 jobs:
   deploy:
@@ -20,6 +40,9 @@ jobs:
 
       - name: Enable Tutor Plugins
         uses: ./.github/workflows/tutor_enable_plugin_s3
+        with:
+          aws-key: ${{ secrets.aws-key }}
+          aws-secret: ${{ secrets.aws-secret }}
 
       - name: Enable the hastexo Backup & Restore plugin
         uses: ./.github/workflows/tutor_enable_plugin_backup

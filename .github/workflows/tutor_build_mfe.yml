@@ -1,0 +1,37 @@
+#------------------------------------------------------------------------------
+# written by: Lawrence McDaniel
+#             https://lawrencemcdaniel.com/
+#
+# date: May-2022
+#
+# usage: Creates a Tutor Docker image for MFE using the latest stable version of
+#        the repo. Registers the new container in AWS ECR.
+#------------------------------------------------------------------------------
+name: Build Micro Front-end (MFE) Image
+
+on:
+  workflow_dispatch:
+  inputs:
+    subdomain:
+      description: ''
+      required: true
+      type: string
+    domain-name:
+      description: ''
+      required: true
+      type: string
+    site-name:
+      description: ''
+      required: true
+      type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build the image and upload to AWS ECR
+        uses: openedx-actions/tutor-plugin-build-mfe@v0.1.1
+        with:
+          subdomain: ${{ inputs.subdomain }}
+          domain-name: ${{ inputs.domain-name }}
+          site-name: ${{ inputs.site-name }}
