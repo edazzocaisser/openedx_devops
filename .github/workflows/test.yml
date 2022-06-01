@@ -27,6 +27,19 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
 
+      - name: Test enable plugins
+        uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugins
+        with:
+          tutor-enable-plugin-s3: false
+          tutor-enable-plugin-backup: false
+          tutor-enable-plugin-discovery: false
+          tutor-enable-plugin-mfe: false
+          tutor-enable-plugin-credentials: false
+          tutor-enable-plugin-xqueue: false
+          tutor-enable-plugin-notes: false
+          tutor-enable-plugin-ecommerce: false
+          tutor-enable-plugin-forum: false
+
       - name: Test init
         uses: ./.github/workflows/tutor/deploy/tutor-deploy-init
         with:
@@ -41,21 +54,6 @@ jobs:
           echo "aws cli version:"
           aws --version
 
-      - name: Checkout
-        uses: actions/checkout@v3.0.2
-
-      - name: Test enable plugins
-        uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugins
-        with:
-          tutor-enable-plugin-s3: false
-          tutor-enable-plugin-backup: false
-          tutor-enable-plugin-discovery: false
-          tutor-enable-plugin-mfe: false
-          tutor-enable-plugin-credentials: false
-          tutor-enable-plugin-xqueue: false
-          tutor-enable-plugin-notes: false
-          tutor-enable-plugin-ecommerce: false
-          tutor-enable-plugin-forum: false
 
       - name: test whether we can dump the tutor config to the console
         run: |-
