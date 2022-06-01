@@ -42,6 +42,9 @@ jobs:
           aws --version
 
       - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-s3
+        with:
+          namespace: openedx-prod
+
       - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-backup
       - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-discovery
       - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-mfe

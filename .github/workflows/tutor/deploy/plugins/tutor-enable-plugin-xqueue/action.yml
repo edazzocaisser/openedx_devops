@@ -13,12 +13,10 @@ branding:
   icon: 'cloud'
   color: 'orange'
 inputs:
-  aws-ses-iam-key:
-    description: 'AWS IAM key for AWS SES email service'
+  namespace:
+    description: 'The Kubernetes namesapce to which the Open edX platform environment will be deployed. Example: openedx-prod'
     required: true
-  aws-ses-iam-secret:
-    description: 'AWS IAM secret for AWS SES email service'
-    required: true
+    type: string
 runs:
   using: "composite"
   steps:
@@ -36,7 +34,7 @@ runs:
     # see: https://github.com/Medality-Health/openedx_devops/blob/main/terraform/modules/mysql/main.tf
     - name: fetch MySQL configuration from Kubernetes secrets
       run: |-
-        kubectl get secret mysql-xqueue -n $NAMESPACE  -o json | jq  '.data | map_values(@base64d)' | jq -r 'keys[] as $k | "TUTOR_\($k|ascii_upcase)=\(.[$k])"' >> $GITHUB_ENV
+        kubectl get secret mysql-xqueue -n ${{ inputs.namespace }}  -o json | jq  '.data | map_values(@base64d)' | jq -r 'keys[] as $k | "TUTOR_\($k|ascii_upcase)=\(.[$k])"' >> $GITHUB_ENV
       shell: bash
 
     - name: Enable the Xqueue plugin
