@@ -13,24 +13,12 @@ branding:
   icon: 'cloud'
   color: 'orange'
 inputs:
-  environment-id:
-    description: 'The Open edX platform environment. Examples: prod, qa, dev'
-    required: true
-    type: string
   namespace:
     description: 'The Kubernetes namesapce to which the Open edX platform environment will be deployed. Example: openedx-prod'
     required: true
     type: string
-  openedx-common-version:
-    description: 'The named release of Open edX platform to deploy. Example: open-release/maple.3'
-    required: true
-    type: string
 runs:
   using: "composite"
-  env:
-    ENVIRONMENT_ID: prod
-    NAMESPACE: openedx-prod
-    OPENEDX_COMMON_VERSION: open-release/maple.3
   steps:
     - name: Checkout
       uses: actions/checkout@v3.0.2
