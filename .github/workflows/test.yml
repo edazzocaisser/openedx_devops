@@ -41,6 +41,9 @@ jobs:
           echo "aws cli version:"
           aws --version
 
+      - name: Checkout
+        uses: actions/checkout@v3.0.2
+
       - name: Test enable plugins
         uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugins
         with:
