@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Test init
-      - uses: ./.github/workflows/tutor/deploy/tutor_deploy_init
+        uses: ./.github/workflows/tutor/deploy/tutor_deploy_init
         with:
           environment-id: prod
           namespace: openedx-prod
@@ -25,19 +25,19 @@ jobs:
           aws-secret: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: test whether installed software works here
-      - run: |-
+        run: |-
           kubectl version --short
           echo
           echo "aws cli version:"
           aws --version
 
       - name: test whether environment variables are set
-      - run: |-
+        run: |-
           echo TUTOR_ROOT=${TUTOR_ROOT}
           echo TUTOR_VERSION=$(tutor --version | cut -f3 -d' ')
 
       - name: test whether we can see stuff retrieved from k8s secrets
-      - run: |-
+        run: |-
           echo MYSQL_HOST=${MYSQL_HOST}
           echo MYSQL_PORT=${MYSQL_PORT}
           echo MYSQL_ROOT_USERNAME=${MYSQL_ROOT_USERNAME}

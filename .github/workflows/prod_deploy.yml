@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy prod
-      - uses: ./.github/workflows/tutor/deploy/tutor_deploy
+        uses: ./.github/workflows/tutor/deploy/tutor_deploy
         with:
           environment-id: prod
           namespace: openedx-prod
