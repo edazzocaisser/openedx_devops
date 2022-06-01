@@ -54,3 +54,8 @@ jobs:
           echo MYSQL_PORT=${MYSQL_PORT}
           echo MYSQL_ROOT_USERNAME=${MYSQL_ROOT_USERNAME}
           echo MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+
+      - name: test whether we can dump the tutor config to the console
+        run: |-
+          echo $(tutor config printroot)/config.yml
+          cat $(tutor config printroot)/config.yml
