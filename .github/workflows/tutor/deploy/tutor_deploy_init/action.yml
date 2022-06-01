@@ -38,22 +38,6 @@ branding:
 run:
   using: "composite"
   steps:
-    - name: Checkout
-      uses: actions/checkout@v3.0.2
-
-    #------------------------------------------------------------------------
-    # I. Bootstrap the Github Actions Ubuntu instance.
-    #------------------------------------------------------------------------
-
-    # grab the AWS IAM key and scret for the IAM user named 'ci'
-    # These are manually stored in https://github.com/Medality-Health/openedx_devops/settings
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1.6.1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-2
-
     # get the Kubernetes kubeconfig for our cluster. This is a prerequisite to getting any other data about or contained within our cluster.
     # see: https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/
     #

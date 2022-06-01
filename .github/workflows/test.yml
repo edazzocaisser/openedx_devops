@@ -15,6 +15,18 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3.0.2
+
+      # grab the AWS IAM key and scret for the IAM user named 'ci'
+      # These are manually stored in https://github.com/Medality-Health/openedx_devops/settings
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1.6.1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+
       - name: Test init
         uses: ./.github/workflows/tutor/deploy/tutor_deploy_init
         with:
