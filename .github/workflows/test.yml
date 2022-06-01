@@ -30,7 +30,7 @@ jobs:
       - name: Test enable plugins
         uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugins
         with:
-          tutor-enable-plugin-s3: false
+          tutor-enable-plugin-s3: true
           tutor-enable-plugin-backup: false
           tutor-enable-plugin-discovery: false
           tutor-enable-plugin-mfe: false
