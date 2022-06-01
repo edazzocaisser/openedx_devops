@@ -1,0 +1,46 @@
+#------------------------------------------------------------------------------
+# written by: mcdaniel
+# date: feb-2022
+#
+# usage: deploy a Tutor-created openedx Docker image to the Kubernetes cluster.
+#        The openedx docker image is created by a Github action in tutor-build.git.
+#------------------------------------------------------------------------------
+name: Enable Tutor plugins
+
+on: [workflow_call]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      ENVIRONMENT_ID: prod
+      NAMESPACE: openedx-prod
+
+    steps:
+
+      - name: Enable Tutor Plugins
+        uses: ./.github/workflows/tutor_enable_plugin_s3
+
+      - name: Enable the hastexo Backup & Restore plugin
+        uses: ./.github/workflows/tutor_enable_plugin_backup
+
+      - name: Enable the Discovery plugin
+        uses: ./.github/workflows/tutor_enable_plugin_discovery
+
+      - name: Enable the MFE plugin
+        uses: ./.github/workflows/tutor_enable_plugin_mfe
+
+      - name: Enable and configure credentials plugin
+        uses: ./.github/workflows/tutor_enable_plugin_credentials
+
+      - name: Enable the Xqueue plugin
+        uses: ./.github/workflows/tutor_enable_plugin_xqueue
+
+      - name: Enable the Notes plugin
+        uses: ./.github/workflows/tutor_enable_plugin_notes
+
+      - name: Enable and configure ecommerce plugin
+        uses: ./.github/workflows/tutor_enable_plugin_ecommerce
+
+      - name: Configure Discussion Forum
+        uses: ./.github/workflows/tutor_enable_plugin_forum

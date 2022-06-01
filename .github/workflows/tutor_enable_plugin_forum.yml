@@ -1,0 +1,21 @@
+#------------------------------------------------------------------------------
+# written by: mcdaniel
+# date: feb-2022
+#
+# usage: enable Discussion Forum for deployment to Kubernetes cluster
+#
+#------------------------------------------------------------------------------
+name: enable Forum plugin for tutor
+
+on: [workflow_call]
+
+jobs:
+  reusable_workflow_job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure Discussion Forum
+        run:  |-
+          pip install tutor-forum
+          tutor plugins enable forum
+          tutor config save

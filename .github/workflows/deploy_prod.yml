@@ -1,0 +1,113 @@
+#------------------------------------------------------------------------------
+# written by: mcdaniel
+# date: feb-2022
+#
+# usage: deploy a Tutor-created openedx Docker image to the Kubernetes cluster.
+#        The openedx docker image is created by a Github action in tutor-build.git.
+#------------------------------------------------------------------------------
+name: prod Deploy optional Open edX modules to Kubernetes
+
+on: [workflow_dispatch]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      ENVIRONMENT_ID: prod
+      NAMESPACE: openedx-prod
+
+    steps:
+
+      - name: Initialize environment
+        uses: ./.github/workflows/tutor_deploy_init
+
+      # note that the Kubernetes additional config data is locally
+      # stored in ci/tutor-deploy/environments/prod/k8s/
+      # in Kubernetes manifest yaml format
+      - name: Create Kubernetes add-on resources
+        run:  |-
+          # Create kubernetes ingress and other environment resources
+          kubectl apply -f "ci/tutor-deploy/environments/$ENVIRONMENT_ID/k8s"
+
+      - name: Enable Tutor Plugins
+        uses: ./.github/workflows/tutor_deploy_plugin_s3
+
+      - name: Enable the hastexo Backup & Restore plugin
+        uses: ./.github/workflows/tutor_deploy_plugin_backup
+
+      - name: Enable the Discovery plugin
+        uses: ./.github/workflows/tutor_deploy_plugin_discovery
+
+      - name: Enable the MFE plugin
+        uses: ./.github/workflows/tutor_deploy_plugin_mfe
+
+      - name: Enable and configure credentials plugin
+        uses: ./.github/workflows/tutor_deploy_plugin_credentials
+
+      - name: Enable the Xqueue plugin
+        uses: ./.github/workflows/tutor_deploy_plugin_xqueue
+
+      - name: Enable the Notes plugin
+        uses: ./.github/workflows/tutor_deploy_plugin_notes
+
+      - name: Enable and configure ecommerce plugin
+        uses: ./.github/workflows/tutor_deploy_plugin_ecommerce
+
+      - name: Configure Discussion Forum
+        uses: ./.github/workflows/tutor_deploy_plugin_forum
+
+      #------------------------------------------------------------------------
+      # IV. Merge all of the configuration data into Tutor's Open edX
+      #     configuration files: config.yml, lms.env.json, cms.env.json
+      #
+      # In this step we're combining three sources of data:
+      # 1. sensitive configuration data retrieved from Kubernetes secrets in section II above
+      # 2. Open edx application and services configuration data created here in section III
+      # 3. LMS and CMS application configuration data stored in our repo at ci/tutor-deploy/environments/prod/settings_merge.json
+      #------------------------------------------------------------------------
+      - name: Patch Generated Configuration (Static)
+        run:  |-
+          echo "config.yml full path: $(tutor config printroot)/config.yml"
+          cat "$(tutor config printroot)/config.yml"
+          echo ""
+          echo ""
+
+
+          cd $TUTOR_ROOT/env/apps/openedx/config/
+
+          mv lms.env.json lms.env.json.orig
+          jq -s '.[0] * .[1]'  lms.env.json.orig  "$GITHUB_WORKSPACE/ci/tutor-deploy/environments/$ENVIRONMENT_ID/settings_merge.json" >  lms.env.json
+
+          echo 'Tutor lms.env.json contents:'
+          cat lms.env.json
+          echo ""
+          echo ""
+
+          mv cms.env.json cms.env.json.orig
+          jq -s '.[0] * .[1]'  cms.env.json.orig  "$GITHUB_WORKSPACE/ci/tutor-deploy/environments/$ENVIRONMENT_ID/settings_merge.json" >  cms.env.json
+          rm *orig
+
+          echo 'Tutor cms.env.json contents:'
+          cat cms.env.json
+          echo ""
+          echo ""
+
+      #------------------------------------------------------------------------
+      # V. Deploy Open edX
+      #------------------------------------------------------------------------
+      - name: Deploy Tutor
+        run:  |-
+          tutor k8s start
+
+      - name: Run tutor init
+        run:  |-
+          tutor k8s init
+
+      - name: Set theme
+        run:  |-
+          tutor k8s settheme edx-theme
+
+      - name: Create admin user
+        run:  |-
+          $(kubectl get secret admin-edx -n $NAMESPACE  -o json | jq  '.data | map_values(@base64d)' |   jq -r 'keys[] as $k | "export \($k|ascii_upcase)=\(.[$k])"')
+          tutor k8s createuser --password "$ADMIN_PASSWORD" --staff --superuser "$ADMIN_USER" admin@mrionline.com
