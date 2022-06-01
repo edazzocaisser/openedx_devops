@@ -48,6 +48,7 @@ jobs:
       - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-backup
         with:
           aws-ecr-uri: 621672204142.dkr.ecr.us-east-2.amazonaws.com/openedx_backup:latest
+          namespace: openedx-prod
 
       - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-discovery
         with:
