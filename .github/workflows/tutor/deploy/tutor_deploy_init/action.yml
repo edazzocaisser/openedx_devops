@@ -40,7 +40,10 @@ secrets:
   aws-ses-iam-secret:
     required: false
     default: SET-ME-PLEASE
-  facebook-api-id:
+  facebook-app-id:
+    required: false
+    default: SET-ME-PLEASE
+  facebook-app-secret:
     required: false
     default: SET-ME-PLEASE
 runs:
@@ -73,6 +76,7 @@ runs:
     # install the latest version of python3 which is a prerequisite for running Tutor
     - name: Setup Python
       run: sudo apt install python3 python3-pip libyaml-dev
+      shell: bash
 
     # install Tutor which we'll use for configuring and deploying Open edX
     - name: Install Tutor
@@ -96,8 +100,8 @@ runs:
 
     - name: Configure 3rd Party Authentication
       run:  |-
-        tutor config save --set OPENEDX_FACEBOOK_APP_ID="${{ secrets.FACEBOOK_APP_ID }}" \
-                          --set OPENEDX_FACEBOOK_APP_SECRET="${{ secrets.FACEBOOK_APP_SECRET }}"
+        tutor config save --set OPENEDX_FACEBOOK_APP_ID="${{ secrets.facebook-app-id }}" \
+                          --set OPENEDX_FACEBOOK_APP_SECRET="${{ secrets.facebook-app-secret }}"
       shell: bash
 
     # retrieve the MySQL connection parameters that we created in Terraform
@@ -134,7 +138,7 @@ runs:
         kubectl get secret jwt -n ${{ inputs.namespace }} -o json |  jq  '.data| map_values(@base64d)'  | jq -r 'keys[] as $k | "\(.[$k])"' > jwt_private_key
       shell: bash
 
-    - nam: Generate JWT private key
+    - name: Generate JWT private key
       run: |-
         export TUTOR_JWT_RSA_PRIVATE_KEY=\'$(sed -E 's/$/\n/g' ./jwt_private_key)\'
       shell: bash
