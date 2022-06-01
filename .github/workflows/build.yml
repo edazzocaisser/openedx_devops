@@ -43,21 +43,21 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${AWS_REGION}
 
-      - name: Build Backup
-        uses: ./.github/workflows/tutor/build/tutor_build_backup
+      - name: Build the image and upload to AWS ECR
+        uses: openedx-actions/tutor-plugin-build-backup@v0.1.2
 
       - name: Build Credentials
-        uses: ./.github/workflows/tutor/build/tutor_build_credentials
+        uses: openedx-actions/tutor-plugin-build-credentials@v0.1.1
 
-      - name: Build MFE
-        uses: ./.github/workflows/tutor/build/tutor_build_mfe
+      - name: Build the MFE image and upload to AWS ECR
+        uses: openedx-actions/tutor-plugin-build-mfe@v0.1.1
         with:
           subdomain: ${SUBDOMAIN}
           domain-name: ${DOMAIN_NAME}
           site-name: ${SITE_NAME}
 
       - name: Build openedx
-        uses: ./.github/workflows/tutor/build/tutor_build_openedx
+        uses: openedx-actions/tutor-plugin-build-openedx@v0.1.8
         with:
           custom-theme-repository: ${{ inputs.custom-theme-repository }}
           custom-theme-repository-ref: ${{ inputs.custom-theme-repository-ref }}

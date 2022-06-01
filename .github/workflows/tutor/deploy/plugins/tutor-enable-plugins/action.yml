@@ -26,31 +26,31 @@ runs:
   using: "composite"
   steps:
     - name: Enable Tutor Plugins
-      uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_s3
+      uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin_s3
       with:
         aws-key: ${{ secrets.aws-key }}
         aws-secret: ${{ secrets.aws-secret }}
 
     - name: Enable the hastexo Backup & Restore plugin
-      uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_backup
+      uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-backup
 
     - name: Enable the Discovery plugin
-      uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_discovery
+      uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-discovery
 
     - name: Enable the MFE plugin
-      uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_mfe
+      uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-mfe
 
     - name: Enable and configure credentials plugin
-      uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_credentials
+      uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-credentials
 
     - name: Enable the Xqueue plugin
-      uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_xqueue
+      uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-xqueue
 
     - name: Enable the Notes plugin
-      uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_notes
+      uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-notes
 
     - name: Enable and configure ecommerce plugin
-      uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_ecommerce
+      uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-ecommerce
 
     - name: Configure Discussion Forum
-      uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_forum
+      uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-forum
