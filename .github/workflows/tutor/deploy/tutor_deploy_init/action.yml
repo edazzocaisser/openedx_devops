@@ -14,35 +14,35 @@ description: Initialize tutor deployment environment
 branding:
   icon: 'cloud'
   color: 'orange'
-  inputs:
-    environment-id:
-      description: 'The Open edX platform environment. Examples: prod, qa, dev'
-      required: true
-      type: string
-    namespace:
-      description: 'The Kubernetes namesapce to which the Open edX platform environment will be deployed. Example: openedx-prod'
-      required: true
-      type: string
-    openedx-common-version:
-      description: 'The named release of Open edX platform to deploy. Example: open-release/maple.3'
-      required: true
-      type: string
-  secrets:
-    aws-key:
-      description: 'AWS IAM key'
-      required: true
-    aws-secret:
-      description: 'AWS IAM secret'
-      required: true
-    aws-ses-iam-key:
-      required: false
-      default: SET-ME-PLEASE
-    aws-ses-iam-secret:
-      required: false
-      default: SET-ME-PLEASE
-    facebook-api-id:
-      required: false
-      default: SET-ME-PLEASE
+inputs:
+  environment-id:
+    description: 'The Open edX platform environment. Examples: prod, qa, dev'
+    required: true
+    type: string
+  namespace:
+    description: 'The Kubernetes namesapce to which the Open edX platform environment will be deployed. Example: openedx-prod'
+    required: true
+    type: string
+  openedx-common-version:
+    description: 'The named release of Open edX platform to deploy. Example: open-release/maple.3'
+    required: true
+    type: string
+secrets:
+  aws-key:
+    description: 'AWS IAM key'
+    required: true
+  aws-secret:
+    description: 'AWS IAM secret'
+    required: true
+  aws-ses-iam-key:
+    required: false
+    default: SET-ME-PLEASE
+  aws-ses-iam-secret:
+    required: false
+    default: SET-ME-PLEASE
+  facebook-api-id:
+    required: false
+    default: SET-ME-PLEASE
 
 
 run:
