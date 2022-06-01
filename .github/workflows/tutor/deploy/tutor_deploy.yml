@@ -84,7 +84,7 @@ jobs:
       # and AWS is neurotic about any changes to the config.
       # ---------------------------------------------------------------------------------
       - name: Setup AWS SES over SMTP
-        uses: ./.github/workflows/tutor/deploy/backend/tutor_configure_smtp
+        uses: ./.github/workflows/tutor/deploy/backend/smtp
         with:
           aws-ses-iam-key: ${{ secrets.aws-ses-iam-key }}
           aws-ses-iam-secret: ${{ secrets.aws-ses-iam-secret }}

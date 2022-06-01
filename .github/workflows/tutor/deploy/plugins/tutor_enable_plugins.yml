@@ -5,65 +5,52 @@
 # usage: Enable optional Open edX services for deployment to Kubernetes
 #------------------------------------------------------------------------------
 name: Enable Tutor plugins
+description:
+branding:
+  icon: 'cloud'
+  color: 'orange'
+inputs:
+  environment-id:
+    description: 'The Open edX platform environment. Examples: prod, qa, dev'
+    required: true
+    type: string
+  namespace:
+    description: 'The Kubernetes namesapce to which the Open edX platform environment will be deployed. Example: openedx-prod'
+    required: true
+    type: string
+  openedx-common-version:
+    description: 'The named release of Open edX platform to deploy. Example: open-release/maple.3'
+    required: true
+    type: string
+runs:
+  using: "composite"
+  steps:
+    - name: Enable Tutor Plugins
+      uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_s3
+      with:
+        aws-key: ${{ secrets.aws-key }}
+        aws-secret: ${{ secrets.aws-secret }}
 
-on:
-  workflow_call:
-  inputs:
-    environment-id:
-      description: 'The Open edX platform environment. Examples: prod, qa, dev'
-      required: true
-      type: string
-    namespace:
-      description: 'The Kubernetes namesapce to which the Open edX platform environment will be deployed. Example: openedx-prod'
-      required: true
-      type: string
-    openedx-common-version:
-      description: 'The named release of Open edX platform to deploy. Example: open-release/maple.3'
-      required: true
-      type: string
-  secrets:
-    aws-key:
-      description: 'AWS IAM key'
-      required: true
-    aws-secret:
-      description: 'AWS IAM secret'
-      required: true
+    - name: Enable the hastexo Backup & Restore plugin
+      uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_backup
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    env:
-      ENVIRONMENT_ID: prod
-      NAMESPACE: openedx-prod
+    - name: Enable the Discovery plugin
+      uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_discovery
 
-    steps:
+    - name: Enable the MFE plugin
+      uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_mfe
 
-      - name: Enable Tutor Plugins
-      - uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_s3
-        with:
-          aws-key: ${{ secrets.aws-key }}
-          aws-secret: ${{ secrets.aws-secret }}
+    - name: Enable and configure credentials plugin
+      uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_credentials
 
-      - name: Enable the hastexo Backup & Restore plugin
-      - uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_backup
+    - name: Enable the Xqueue plugin
+      uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_xqueue
 
-      - name: Enable the Discovery plugin
-      - uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_discovery
+    - name: Enable the Notes plugin
+      uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_notes
 
-      - name: Enable the MFE plugin
-      - uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_mfe
+    - name: Enable and configure ecommerce plugin
+      uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_ecommerce
 
-      - name: Enable and configure credentials plugin
-      - uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_credentials
-
-      - name: Enable the Xqueue plugin
-      - uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_xqueue
-
-      - name: Enable the Notes plugin
-      - uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_notes
-
-      - name: Enable and configure ecommerce plugin
-      - uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_ecommerce
-
-      - name: Configure Discussion Forum
-      - uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_forum
+    - name: Configure Discussion Forum
+      uses: ./.github/workflows/tutor/deploy/plugins/tutor_enable_plugin_forum

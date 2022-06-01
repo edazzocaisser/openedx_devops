@@ -9,8 +9,8 @@
 #   - install kubectl
 #   -
 #------------------------------------------------------------------------------
-name: Init environment
-description: Initialize tutor deployment environment
+name: Initial and configure tutor
+description: Install aws cli, kubectl, and tutor. Configure tutor
 branding:
   icon: 'cloud'
   color: 'orange'
