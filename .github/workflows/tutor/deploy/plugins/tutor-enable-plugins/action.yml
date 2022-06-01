@@ -71,33 +71,33 @@ runs:
       uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin_s3
 
     - name: Enable the hastexo Backup & Restore plugin
-      if: ${{ inputs.tutor-enable-plugin-backup }}
+      if: ${{ inputs.tutor-enable-plugin-backup == true }}
       uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-backup
 
     - name: Enable the Discovery plugin
-      if: ${{ inputs.tutor-enable-plugin-discovery }}
+      if: ${{ inputs.tutor-enable-plugin-discovery == true }}
       uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-discovery
 
     - name: Enable the MFE plugin
-      if: ${{ inputs.tutor-enable-plugin-mfe }}
+      if: ${{ inputs.tutor-enable-plugin-mfe == true }}
       uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-mfe
 
     - name: Enable and configure credentials plugin
-      if: ${{ inputs.tutor-enable-plugin-credentials }}
+      if: ${{ inputs.tutor-enable-plugin-credentials == true }}
       uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-credentials
 
     - name: Enable the Xqueue plugin
-      if: ${{ inputs.tutor-enable-plugin-xqueue }}
+      if: ${{ inputs.tutor-enable-plugin-xqueue == true }}
       uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-xqueue
 
     - name: Enable the Notes plugin
-      if: ${{ inputs.tutor-enable-plugin-notes }}
+      if: ${{ inputs.tutor-enable-plugin-notes == true }}
       uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-notes
 
     - name: Enable and configure ecommerce plugin
-      if: ${{ inputs.tutor-enable-plugin-ecommerce }}
+      if: ${{ inputs.tutor-enable-plugin-ecommerce == true }}
       uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-ecommerce
 
     - name: Configure Discussion Forum
-      if: ${{ inputs.tutor-enable-plugin-forum }}
+      if: ${{ inputs.tutor-enable-plugin-forum == true }}
       uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-forum
