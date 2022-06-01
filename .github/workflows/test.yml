@@ -27,6 +27,20 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
 
+      - name: Test init
+        uses: ./.github/workflows/tutor/deploy/tutor-deploy-init
+        with:
+          environment-id: prod
+          namespace: openedx-prod
+          openedx-common-version: open-release/maple.3
+
+      - name: test whether installed software works here
+        run: |-
+          kubectl version --short
+          echo
+          echo "aws cli version:"
+          aws --version
+
       - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-s3
       - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-backup
       - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-discovery
@@ -37,23 +51,7 @@ jobs:
       - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-ecommerce
       - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-forum
 
-
-      #- name: Test init
-      #  uses: ./.github/workflows/tutor/deploy/tutor-deploy-init
-      #  with:
-      #    environment-id: prod
-      #    namespace: openedx-prod
-      #    openedx-common-version: open-release/maple.3
-
-      #- name: test whether installed software works here
-      #  run: |-
-      #    kubectl version --short
-      #    echo
-      #    echo "aws cli version:"
-      #    aws --version
-
-
-      #- name: test whether we can dump the tutor config to the console
-      #  run: |-
-      #    echo $(tutor config printroot)/config.yml
-      #    cat $(tutor config printroot)/config.yml
+      - name: test whether we can dump the tutor config to the console
+        run: |-
+          echo $(tutor config printroot)/config.yml
+          cat $(tutor config printroot)/config.yml
