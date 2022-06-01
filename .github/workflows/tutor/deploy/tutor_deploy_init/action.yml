@@ -19,7 +19,7 @@ branding:
       description: 'The Open edX platform environment. Examples: prod, qa, dev'
       required: true
       type: string
-    ${{ inputs.namespace }}:
+    namespace:
       description: 'The Kubernetes namesapce to which the Open edX platform environment will be deployed. Example: openedx-prod'
       required: true
       type: string
@@ -34,6 +34,16 @@ branding:
     aws-secret:
       description: 'AWS IAM secret'
       required: true
+    aws-ses-iam-key:
+      required: false
+      default: SET-ME-PLEASE
+    aws-ses-iam-secret:
+      required: false
+      default: SET-ME-PLEASE
+    facebook-api-id:
+      required: false
+      default: SET-ME-PLEASE
+
 
 run:
   using: "composite"
