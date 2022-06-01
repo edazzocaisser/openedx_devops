@@ -58,6 +58,10 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Test boolean input
+      if: ${{ inputs.tutor-enable-plugin-s3 }}
+      run: echo "tutor-enable-plugin-s3 is GO"
+
     - name: Checkout
       uses: actions/checkout@v3.0.2
 
