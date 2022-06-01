@@ -75,7 +75,7 @@ runs:
       uses: actions/checkout@v3.0.2
 
     - name: Test for true
-      if: ${{ inputs.tutor-enable-plugin-s3 == true }}
+      if: ${{ inputs.tutor-enable-plugin-s3 == 'true' }}
       run: |-
         echo "S3 is true"
       shell: bash
