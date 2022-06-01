@@ -58,6 +58,19 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Init
+      run: |-
+        echo  "tutor-enable-plugin-s3: ${{ inputs.tutor-enable-plugin-s3 }} "
+        echo  "tutor-enable-plugin-backup: ${{ inputs.tutor-enable-plugin-backup }} "
+        echo  "tutor-enable-plugin-discovery: ${{ inputs.tutor-enable-plugin-discovery }} "
+        echo  "tutor-enable-plugin-mfe: ${{ inputs.tutor-enable-plugin-mfe }} "
+        echo  "tutor-enable-plugin-credentials: ${{ inputs.tutor-enable-plugin-credentials }} "
+        echo  "tutor-enable-plugin-xqueue: ${{ inputs.tutor-enable-plugin-xqueue }} "
+        echo  "tutor-enable-plugin-notes: ${{ inputs.tutor-enable-plugin-notes }} "
+        echo  "tutor-enable-plugin-ecommerce: ${{ inputs.tutor-enable-plugin-ecommerce }} "
+        echo  "tutor-enable-plugin-forum: ${{ inputs.tutor-enable-plugin-forum }} "
+      shell: bash
+
     - name: Checkout
       uses: actions/checkout@v3.0.2
 
