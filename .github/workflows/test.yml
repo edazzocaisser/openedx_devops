@@ -47,11 +47,26 @@ jobs:
 
       - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-backup
       - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-discovery
+        with:
+          namespace: openedx-prod
+
       - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-mfe
       - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-credentials
+        with:
+          namespace: openedx-prod
+
       - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-xqueue
+        with:
+          namespace: openedx-prod
+
       - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-notes
+        with:
+          namespace: openedx-prod
+
       - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-ecommerce
+        with:
+          namespace: openedx-prod
+
       - uses: ./.github/workflows/tutor/deploy/plugins/tutor-enable-plugin-forum
 
       - name: test whether we can dump the tutor config to the console
