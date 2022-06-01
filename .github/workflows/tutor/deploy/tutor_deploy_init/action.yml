@@ -27,13 +27,6 @@ inputs:
     description: 'The named release of Open edX platform to deploy. Example: open-release/maple.3'
     required: true
     type: string
-secrets:
-  aws-key:
-    description: 'AWS IAM key'
-    required: true
-  aws-secret:
-    description: 'AWS IAM secret'
-    required: true
   aws-ses-iam-key:
     required: false
     default: SET-ME-PLEASE
@@ -100,8 +93,8 @@ runs:
 
     - name: Configure 3rd Party Authentication
       run:  |-
-        tutor config save --set OPENEDX_FACEBOOK_APP_ID="${{ secrets.facebook-app-id }}" \
-                          --set OPENEDX_FACEBOOK_APP_SECRET="${{ secrets.facebook-app-secret }}"
+        tutor config save --set OPENEDX_FACEBOOK_APP_ID="${{ inputs.facebook-app-id }}" \
+                          --set OPENEDX_FACEBOOK_APP_SECRET="${{ inputs.facebook-app-secret }}"
       shell: bash
 
     # retrieve the MySQL connection parameters that we created in Terraform
@@ -159,8 +152,8 @@ runs:
         echo "TUTOR_RUN_SMTP=true" >> $GITHUB_ENV
         tutor config save --set EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend" \
                           --set EMAIL_HOST="email-smtp.us-east-2.amazonaws.com" \
-                          --set EMAIL_HOST_PASSWORD=${{ secrets.AWS_SES_IAM_SECRET }} \
-                          --set EMAIL_HOST_USER=${{ secrets.AWS_SES_IAM_KEY }} \
+                          --set EMAIL_HOST_USER=${{ inputs.aws-ses-iam-key }} \
+                          --set EMAIL_HOST_PASSWORD=${{ inputs.aws-ses-iam-secret }} \
                           --set EMAIL_PORT=587 \
                           --set EMAIL_USE_TLS=true
       shell: bash
@@ -174,7 +167,7 @@ runs:
     - name: Load environment specific settings (direct)
       run: |-
         # Pin the instalation ID with the Kubernetes ${{ inputs.namespace }}. It needs to be unique and static per instalation.
-        cat ci/tutor-deploy/environments/$ENVIRONMENT_ID/config.yml >> $GITHUB_ENV
+        cat ci/tutor-deploy/environments/${{ inputs.environment-id }}/config.yml >> $GITHUB_ENV
       shell: bash
 
     # note that values like $LMS_HOSTNAME come from this repo
