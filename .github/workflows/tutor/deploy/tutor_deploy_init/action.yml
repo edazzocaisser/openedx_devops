@@ -43,9 +43,7 @@ secrets:
   facebook-api-id:
     required: false
     default: SET-ME-PLEASE
-
-
-run:
+runs:
   using: "composite"
   steps:
     # get the Kubernetes kubeconfig for our cluster. This is a prerequisite to getting any other data about or contained within our cluster.
