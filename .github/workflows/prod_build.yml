@@ -47,7 +47,7 @@ jobs:
       - uses: ./.github/workflows/tutor/build/tutor_build_backup
 
       - name: Build Credentials
-        uses: ./.github/workflows/tutor/build/tutor_build_credentials
+      - uses: ./.github/workflows/tutor/build/tutor_build_credentials
 
       - name: Build MFE
       - uses: ./.github/workflows/tutor/build/tutor_build_mfe
