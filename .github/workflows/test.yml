@@ -40,22 +40,22 @@ jobs:
           tutor-enable-plugin-ecommerce: false
           tutor-enable-plugin-forum: false
 
-      - name: Test init
-        uses: ./.github/workflows/tutor/deploy/tutor-deploy-init
-        with:
-          environment-id: prod
-          namespace: openedx-prod
-          openedx-common-version: open-release/maple.3
+      #- name: Test init
+      #  uses: ./.github/workflows/tutor/deploy/tutor-deploy-init
+      #  with:
+      #    environment-id: prod
+      #    namespace: openedx-prod
+      #    openedx-common-version: open-release/maple.3
 
-      - name: test whether installed software works here
-        run: |-
-          kubectl version --short
-          echo
-          echo "aws cli version:"
-          aws --version
+      #- name: test whether installed software works here
+      #  run: |-
+      #    kubectl version --short
+      #    echo
+      #    echo "aws cli version:"
+      #    aws --version
 
 
-      - name: test whether we can dump the tutor config to the console
-        run: |-
-          echo $(tutor config printroot)/config.yml
-          cat $(tutor config printroot)/config.yml
+      #- name: test whether we can dump the tutor config to the console
+      #  run: |-
+      #    echo $(tutor config printroot)/config.yml
+      #    cat $(tutor config printroot)/config.yml
