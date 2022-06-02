@@ -56,3 +56,14 @@ jobs:
           echo "AWS_ECR_REPOSITORY_CREDENTIALS=${AWS_ECR_URI}/openedx_credentials:latest" >> $GITHUB_ENV
           echo "AWS_ECR_REPOSITORY_MFE=${AWS_ECR_URI}/openedx_mfe:latest" >> $GITHUB_ENV
           echo "AWS_ECR_REPOSITORY_OPENEDX=${AWS_ECR_URI}/openedx:latest" >> $GITHUB_ENV
+
+      # ---------------------------------------------------------------------------------
+      # initialize this Github workspace environment: python, tutor, kubectl, aws cli
+      # ---------------------------------------------------------------------------------
+      - name: Initialize environment
+        uses: ./.github/workflows/tutor/k8s/init
+        with:
+          environment-id: prod
+          namespace: openedx-prod
+          openedx-common-version: open-release/maple.3
+          aws-ecr-uri: ${AWS_ECR_REPOSITORY_OPENEDX}
