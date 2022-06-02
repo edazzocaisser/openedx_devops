@@ -27,10 +27,10 @@ jobs:
       # feature flags for optional tutor modules
       # --------------------------------------------
       ENABLE_FORUM: true
-      ENABLE_DISCOVERY: false
-      ENABLE_XQUEUE: false
-      ENABLE_NOTES: false
-      ENABLE_ECOMMERCE: false
+      ENABLE_DISCOVERY: true
+      ENABLE_XQUEUE: true
+      ENABLE_NOTES: true
+      ENABLE_ECOMMERCE: true
 
       ENABLE_S3: false
       ENABLE_MFE: false
