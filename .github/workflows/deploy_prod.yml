@@ -136,7 +136,7 @@ jobs:
       # Configure backend services
       # ---------------------------------------------------------------------------------
       - name: Configure SMTP
-        uses: openedx-actions/tutor-service-configure-smtp@v0.0.1
+        uses: openedx-actions/tutor-service-configure-smtp@v0.0.2
         with:
           aws-ses-iam-key: ${{ secrets.aws-ses-iam-key }}
           aws-ses-iam-secret: ${{ secrets.aws-ses-iam-secret }}
@@ -144,9 +144,24 @@ jobs:
 
       - name: Configure Redis
         uses: openedx-actions/tutor-service-configure-redis@v0.0.2
+        with:
+          namespace: openedx-prod
 
       - name: Configure MySQL
         uses: openedx-actions/tutor-service-configure-mysql@v0.0.2
+        with:
+          namespace: openedx-prod
+
+      - name: Dump the config
+        shell: bash
+        run: |-
+          echo 'config.yml:'
+          echo '-------------------------------------'
+          cat $(tutor config printroot)/config.yml
+          echo
+          echo 'lms.env.json:'
+          echo '-------------------------------------'
+          cat $(tutor config printroot)/env/apps/openedx/config/lms.env.json
 
       # ---------------------------------------------------------------------------------
       # Deploy
