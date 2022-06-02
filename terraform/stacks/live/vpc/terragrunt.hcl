@@ -8,16 +8,16 @@
 #------------------------------------------------------------------------------
 locals {
   # Automatically load stack-level variables
-  stack_vars = read_terragrunt_config(find_in_parent_folders("stack.hcl"))
-  global_vars      = read_terragrunt_config(find_in_parent_folders("global.hcl"))
+  stack_vars  = read_terragrunt_config(find_in_parent_folders("stack.hcl"))
+  global_vars = read_terragrunt_config(find_in_parent_folders("global.hcl"))
 
   # Extract out common variables for reuse
-  platform_name         = local.global_vars.locals.platform_name
-  platform_region       = local.global_vars.locals.platform_region
-  aws_region            = local.global_vars.locals.aws_region
-  stack                 = local.stack_vars.locals.stack
-  namespace             = local.stack_vars.locals.stack_namespace
-  resource_name         = local.stack_vars.locals.stack_namespace
+  platform_name   = local.global_vars.locals.platform_name
+  platform_region = local.global_vars.locals.platform_region
+  aws_region      = local.global_vars.locals.aws_region
+  stack           = local.stack_vars.locals.stack
+  namespace       = local.stack_vars.locals.stack_namespace
+  resource_name   = local.stack_vars.locals.stack_namespace
 
   tags = merge(
     local.stack_vars.locals.tags,
@@ -41,21 +41,21 @@ include {
 # These are the variables we have to pass in to use the module specified in the terragrunt configuration above
 inputs = {
   aws_region            = local.aws_region
-  namespace = local.namespace
+  environment_namespace = local.environment_namespace
   name                  = "${local.resource_name}"
-  cidr                  = "192.168.0.0/20"
+  cidr                  = "10.0.0.0/14"
   azs                   = ["${local.aws_region}a", "${local.aws_region}b", "${local.aws_region}c"]
 
-  public_subnets      = ["192.168.1.0/24", "192.168.2.0/24", "192.168.3.0/24"]
-  private_subnets     = ["192.168.4.0/24", "192.168.5.0/24", "192.168.6.0/24"]
-  database_subnets    = ["192.168.8.0/24", "192.168.9.0/24"]
-  elasticache_subnets = ["192.168.10.0/24", "192.168.11.0/24"]
+  public_subnets      = ["10.0.0.0/18", "10.0.64.0/18", "10.0.128.0/18"]
+  private_subnets     = ["10.1.0.0/16", "10.2.0.0/16", "10.3.0.0/16"]
+  database_subnets    = ["10.0.192.0/21", "10.0.200.0/21"]
+  elasticache_subnets = ["10.0.208.0/21", "10.0.216.0/21"]
 
-  enable_ipv6          = false
+  enable_ipv6 = false
 
   # NAT Gateway configuration
-  enable_nat_gateway   = true
-  single_nat_gateway   = true
+  enable_nat_gateway     = true
+  single_nat_gateway     = true
   one_nat_gateway_per_az = false
 
   enable_dns_hostnames = true
