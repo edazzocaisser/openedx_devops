@@ -26,10 +26,11 @@ jobs:
 
       # feature flags for optional tutor modules
       # --------------------------------------------
+      ENABLE_FORUM: true
+
       ENABLE_S3: false
       ENABLE_MFE: false
       ENABLE_BACKUP: false
-      ENABLE_FORUM: false
 
       ENABLE_DISCOVERY: false
       ENABLE_CREDENTIALS: false
