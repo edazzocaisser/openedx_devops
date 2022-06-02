@@ -16,7 +16,7 @@ jobs:
     env:
       # common settings
       # --------------------------------------------
-      AWS_ACCOUNT_NUMBER: '123456789012'
+      AWS_ACCOUNT_NUMBER: '621672204142'
       AWS_ECR_HOST: 'dkr.ecr.us-east-2.amazonaws.com'
 
       # environment settings
