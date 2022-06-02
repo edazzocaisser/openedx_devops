@@ -34,10 +34,6 @@ runs:
         echo '-------------------------------------'
         cat $(tutor config printroot)/config.yml
 
-        echo 'lms.env.json:'
-        echo '-------------------------------------'
-        cat $(tutor config printroot)/env/apps/openedx/config/lms.env.json
-
     - name: Dump tutor openedx/config/lms.env.json
       shell: bash
       continue-on-error: true

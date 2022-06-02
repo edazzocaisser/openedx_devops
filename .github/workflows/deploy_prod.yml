@@ -77,7 +77,7 @@ jobs:
           aws-ecr-uri: ${AWS_ECR_REPOSITORY_OPENEDX}
 
       - name: Dump tutor config
-        uses: ./.github/workflows/tutor/dump-config
+        uses: ./.github/workflows/tutor/print-dump
 
       # ---------------------------------------------------------------------------------
       # Configure optional tutor plugins
@@ -101,6 +101,9 @@ jobs:
         with:
           namespace: openedx-prod
 
+      - name: Dump tutor config.yml
+        uses: ./.github/workflows/tutor/print-config
+
       - name: Enable tutor plugin - MFE
         uses: openedx-actions/tutor-plugin-enable-mfe@v0.0.1
         if: ${{ env.ENABLE_MFE == 'true' }}
@@ -121,17 +124,26 @@ jobs:
         with:
           namespace: openedx-prod
 
+      - name: Dump tutor config.yml
+        uses: ./.github/workflows/tutor/print-config
+
       - name: Enable tutor plugin - Notes
         uses: openedx-actions/tutor-plugin-enable-notes@v0.0.1
         if: ${{ env.ENABLE_NOTES == 'true' }}
         with:
           namespace: openedx-prod
 
+      - name: Dump tutor config.yml
+        uses: ./.github/workflows/tutor/print-config
+
       - name: Enable tutor plugin - Ecommerce
         uses: openedx-actions/tutor-plugin-enable-ecommerce@v0.0.1
         if: ${{ env.ENABLE_ECOMMERCE == 'true' }}
         with:
           namespace: openedx-prod
+
+      - name: Dump tutor config.yml
+        uses: ./.github/workflows/tutor/print-config
 
       - name: Enable tutor plugin - Forum
         uses: openedx-actions/tutor-plugin-enable-forum@v0.0.1
@@ -169,7 +181,7 @@ jobs:
           namespace: openedx-prod
 
       - name: Dump tutor config
-        uses: ./.github/workflows/tutor/dump-config
+        uses: ./.github/workflows/tutor/print-dump
 
 
       # ---------------------------------------------------------------------------------
