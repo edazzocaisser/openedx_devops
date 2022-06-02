@@ -168,6 +168,15 @@ jobs:
       - name: Dump the config
         shell: bash
         run: |-
+
+          echo 'apps:'
+          echo '-------------------------------------'
+          ls $(tutor config printroot)/env/apps -lha
+
+          echo 'plugins:'
+          echo '-------------------------------------'
+          ls $(tutor config printroot)/env/plugins -lha
+
           echo 'config.yml:'
           echo '-------------------------------------'
           cat $(tutor config printroot)/config.yml
