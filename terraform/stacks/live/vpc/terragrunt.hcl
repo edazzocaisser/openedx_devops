@@ -40,16 +40,16 @@ include {
 
 # These are the variables we have to pass in to use the module specified in the terragrunt configuration above
 inputs = {
-  aws_region            = local.aws_region
-  environment_namespace = local.environment_namespace
-  name                  = "${local.resource_name}"
-  cidr                  = "10.0.0.0/14"
-  azs                   = ["${local.aws_region}a", "${local.aws_region}b", "${local.aws_region}c"]
+  aws_region = local.aws_region
+  namespace  = local.namespace
+  name       = "${local.resource_name}"
+  cidr       = "192.168.0.0/20"
+  azs        = ["${local.aws_region}a", "${local.aws_region}b", "${local.aws_region}c"]
 
-  public_subnets      = ["10.0.0.0/18", "10.0.64.0/18", "10.0.128.0/18"]
-  private_subnets     = ["10.1.0.0/16", "10.2.0.0/16", "10.3.0.0/16"]
-  database_subnets    = ["10.0.192.0/21", "10.0.200.0/21"]
-  elasticache_subnets = ["10.0.208.0/21", "10.0.216.0/21"]
+  public_subnets      = ["192.168.1.0/24", "192.168.2.0/24", "192.168.3.0/24"]
+  private_subnets     = ["192.168.4.0/24", "192.168.5.0/24", "192.168.6.0/24"]
+  database_subnets    = ["192.168.8.0/24", "192.168.9.0/24"]
+  elasticache_subnets = ["192.168.10.0/24", "192.168.11.0/24"]
 
   enable_ipv6 = false
 
