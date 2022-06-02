@@ -27,6 +27,10 @@ inputs:
     description: 'The named release of Open edX platform to deploy. Example: open-release/maple.3'
     required: true
     type: string
+  aws-ecr-uri:
+    description: ''
+    required: true
+    type: string
   aws-ses-iam-key:
     required: false
     default: SET-ME-PLEASE
@@ -51,41 +55,40 @@ runs:
     #   - EKS Cluster ARN
     #   - Certificate authority (ie the private ssh key)
     - name: Install and configure kubectl
+      shell: bash
       run: |-
         sudo snap install kubectl --channel=1.23/stable --classic
         aws eks --region us-east-2 update-kubeconfig --name mrionline-global-live --alias eks-prod
-      shell: bash
 
-    # dump version information for aws cli and kubectl to the console
     - name: Check environments versions
+      shell: bash
       run: |-
         echo "kubectl version:"
         kubectl version --short
         echo
         echo "aws cli version:"
         aws --version
-      shell: bash
 
     # install the latest version of python3 which is a prerequisite for running Tutor
     - name: Setup Python
-      run: sudo apt install python3 python3-pip libyaml-dev
       shell: bash
+      run: sudo apt install python3 python3-pip libyaml-dev
 
     # install Tutor which we'll use for configuring and deploying Open edX
     - name: Install Tutor
+      shell: bash
       run: |-
         pip install --upgrade pyyaml
         echo "TUTOR_ROOT=$GITHUB_WORKSPACE/tutor" >> $GITHUB_ENV
         pip install tutor
         echo "TUTOR_VERSION=$(tutor --version | cut -f3 -d' ')" >> $GITHUB_ENV
-      shell: bash
 
 
     - name: Configure 3rd Party Authentication
+      shell: bash
       run:  |-
         tutor config save --set OPENEDX_FACEBOOK_APP_ID="${{ inputs.facebook-app-id }}" \
                           --set OPENEDX_FACEBOOK_APP_SECRET="${{ inputs.facebook-app-secret }}"
-      shell: bash
 
     # retrieve the MySQL connection parameters that we created in Terraform
     # and then stored in Kubernetes secrets. These include:
@@ -100,77 +103,67 @@ runs:
     #
     # see: https://github.com/Medality-Health/openedx_devops/blob/main/terraform/modules/mysql/main.tf
     - name: fetch MySQL configuration from Kubernetes secrets
+      shell: bash
       run: |-
         kubectl get secret mysql-root -n ${{ inputs.namespace }}  -o json | jq  '.data | map_values(@base64d)' | jq -r 'keys[] as $k | "TUTOR_\($k|ascii_upcase)=\(.[$k])"' >> $GITHUB_ENV
-      shell: bash
 
     #------------------------------------------------------------------------
     # II. Get all of our backend configuration data that was stored in
     #     Kubernetes secrets by various Terraform modules
     #------------------------------------------------------------------------
     - name: Configure Open edX version
-      run: |-
-        echo "${{ inputs.openedx-common-version }}=$${{ inputs.openedx-common-version }}" >> $GITHUB_ENV
       shell: bash
+      run: |-
+        echo "OPENEDX_COMMON_VERSION=${{ inputs.openedx-common-version }}" >> $GITHUB_ENV
 
     # retrieve the Open edX JWT token that we created with Terraform and
     # then stored in Kubernetes secrets
     # see: https://github.com/Medality-Health/openedx_devops/blob/main/terraform/modules/kubernetes_secrets/main.tf
     - name: Fetch JWT token
+      shell: bash
       run: |-
         kubectl get secret jwt -n ${{ inputs.namespace }} -o json |  jq  '.data| map_values(@base64d)'  | jq -r 'keys[] as $k | "\(.[$k])"' > jwt_private_key
-      shell: bash
 
     - name: Generate JWT private key
+      shell: bash
       run:  |-
         export TUTOR_JWT_RSA_PRIVATE_KEY=\'$(sed -E 's/$/\n/g' ./jwt_private_key)\'
-      shell: bash
 
     - name: Generate Tutor Config
+      shell: bash
       run:  |-
         tutor config save
         cat $TUTOR_ROOT/config.yml
-      shell: bash
 
-
-    # ---------------------------------------------------------------------------------
-    # Note: We're not managing AWS SES with Terraform simply because the service is fiddly
-    # and AWS is neurotic about any changes to the config.
-    # ---------------------------------------------------------------------------------
-    - name: Setup AWS SES over SMTP
-      run: |-
-        echo "TUTOR_RUN_SMTP=true" >> $GITHUB_ENV
-        tutor config save --set EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend" \
-                          --set EMAIL_HOST="email-smtp.us-east-2.amazonaws.com" \
-                          --set EMAIL_HOST_USER=${{ inputs.aws-ses-iam-key }} \
-                          --set EMAIL_HOST_PASSWORD=${{ inputs.aws-ses-iam-secret }} \
-                          --set EMAIL_PORT=587 \
-                          --set EMAIL_USE_TLS=true
-      shell: bash
 
     # see: https://github.com/Medality-Health/openedx_devops/blob/main/terraform/modules/kubernetes_secrets/main.tf
     - name: fetch EDX Secret Key from Kubernetes secrets
+      shell: bash
       run: |-
         kubectl get secret edx-secret-key -n ${{ inputs.namespace }}  -o json | jq  '.data | map_values(@base64d)' | jq -r 'keys[] as $k | "TUTOR_\($k|ascii_upcase)=\(.[$k])"' >> $GITHUB_ENV
-      shell: bash
 
     - name: Load environment specific settings (direct)
-      run: |-
-        # Pin the instalation ID with the Kubernetes ${{ inputs.namespace }}. It needs to be unique and static per instalation.
-        cat ci/tutor-deploy/environments/${{ inputs.environment-id }}/config.yml >> $GITHUB_ENV
       shell: bash
+      run: |-
+        # Pin the instalation ID with the Kubernetes namespace. It needs to be unique and static per instalation.
+        cat ci/tutor-deploy/environments/${{ inputs.environment-id }}/config.yml >> $GITHUB_ENV
 
     # note that values like $LMS_HOSTNAME come from this repo
     # in /ci/tutor-deploy/environments/prod/config.yml
     - name: Load additional environment specific settings  (computed)
+      shell: bash
       run: |-
         # We don't want to run these services as we are using the Kubernetes ingress instead.
         echo "TUTOR_RUN_MYSQL=false" >> $GITHUB_ENV
         echo "TUTOR_ID=tutor-${{ inputs.namespace }}" >> $GITHUB_ENV
         echo "TUTOR_LMS_HOST=$LMS_HOSTNAME" >> $GITHUB_ENV
         echo "TUTOR_CMS_HOST=$CMS_HOSTNAME" >> $GITHUB_ENV
-        echo "TUTOR_K8S_${{ inputs.namespace }}=${{ inputs.namespace }}" >> $GITHUB_ENV
-        echo "TUTOR_DOCKER_IMAGE_OPENEDX=$DOCKER_IMAGE_OPENEDX" >> $GITHUB_ENV
+        echo "TUTOR_K8S_NAMESPACE=${{ inputs.namespace }}" >> $GITHUB_ENV
+        echo "TUTOR_DOCKER_IMAGE_OPENEDX=${{ inputs.aws-ecr-uri }}" >> $GITHUB_ENV
         echo "TUTOR_RUN_CADDY=false" >> $GITHUB_ENV
         echo "TUTOR_RUN_NGINX=false" >> $GITHUB_ENV
+
+    - name: Save tutor configuration data
       shell: bash
+      run: |-
+        tutor config save

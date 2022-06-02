@@ -1,14 +1,9 @@
 #------------------------------------------------------------------------------
 # written by: mcdaniel
-# date: feb-2022
+# date: june-2022
 #
-# see:
-# https://docs.github.com/en/actions/using-workflows/reusing-workflows
-# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#onworkflow_callinputs
-# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#onworkflow_callsecrets
 #------------------------------------------------------------------------------
-name: Deploy to Kubernetes
-description:
+name: Deploy Open edX to Kubernetes
 branding:
   icon: 'cloud'
   color: 'orange'
@@ -21,72 +16,21 @@ inputs:
     description: 'The Kubernetes namesapce to which the Open edX platform environment will be deployed. Example: openedx-prod'
     required: true
     type: string
-  openedx-common-version:
-    description: 'The named release of Open edX platform to deploy. Example: open-release/maple.3'
-    required: true
-    type: string
-  aws-ses-iam-key:
-    description: 'AWS SES IAM key'
-    required: false
-    default: 'SET-ME-PLEASE'
-  aws-ses-iam-secret:
-    description: 'AWS SES IAM secret'
-    required: false
-    default: 'SET-ME-PLEASE'
+
 runs:
   using: "composite"
-  env:
-    ENVIRONMENT_ID: prod
-    NAMESPACE: openedx-prod
   steps:
-    - name: Checkout
-      uses: actions/checkout@v3.0.2
-
-    - name: Initialize environment
-      uses: ./.github/workflows/tutor/deploy/tutor-deploy-init
-      with:
-        environment-id: prod
-        namespace: openedx-prod
-        openedx-common-version: open-release/maple.3
-
-    - name: Enable Tutor plugins
-      uses: ./.github/workflows/tutor/deloy/plugins/tutor-enable-plugins
-      with:
-        tutor-enable-plugin-s3: true
-        tutor-enable-plugin-backup: true
-        tutor-enable-plugin-discovery: true
-        tutor-enable-plugin-mfe: true
-        tutor-enable-plugin-credentials: true
-        tutor-enable-plugin-xqueue: true
-        tutor-enable-plugin-notes: true
-        tutor-enable-plugin-ecommerce: true
-        tutor-enable-plugin-forum: true
-
+    # ---------------------------------------------------------------------------------
+    # Configure k8s add-on resources
+    #
     # note that the Kubernetes additional config data is locally
     # stored in ci/tutor-deploy/environments/prod/k8s/
     # in Kubernetes manifest yaml format
+    # ---------------------------------------------------------------------------------
     - name: Create Kubernetes add-on resources
       run:  |-
         # Create kubernetes ingress and other environment resources
-        kubectl apply -f "ci/tutor-deploy/environments/$ENVIRONMENT_ID/k8s"
-
-
-    # ---------------------------------------------------------------------------------
-    # Note: We're not managing AWS SES with Terraform simply because the service is fiddly
-    # and AWS is neurotic about any changes to the config.
-    # ---------------------------------------------------------------------------------
-    - name: Configure SMTP
-      uses: openedx-actions/tutor-service-configure-smtp
-      with:
-        aws-ses-iam-key: ${{ secrets.aws-ses-iam-key }}
-        aws-ses-iam-secret: ${{ secrets.aws-ses-iam-secret }}
-        aws-region: us-east-2
-
-    - name: Configure Redis
-      uses: openedx-actions/tutor-service-configure-redis
-
-    - name: Configure MySQL
-      uses: openedx-actions/tutor-service-configure-mysql
+        kubectl apply -f "ci/tutor-deploy/environments/${{ inputs.environment-id }}/k8s"
 
     #------------------------------------------------------------------------
     # IV. Merge all of the configuration data into Tutor's Open edX
@@ -104,11 +48,10 @@ runs:
         echo ""
         echo ""
 
-
         cd $TUTOR_ROOT/env/apps/openedx/config/
 
         mv lms.env.json lms.env.json.orig
-        jq -s '.[0] * .[1]'  lms.env.json.orig  "$GITHUB_WORKSPACE/ci/tutor-deploy/environments/$ENVIRONMENT_ID/settings_merge.json" >  lms.env.json
+        jq -s '.[0] * .[1]'  lms.env.json.orig  "$GITHUB_WORKSPACE/ci/tutor-deploy/environments/${{ inputs.environment-id }}/settings_merge.json" >  lms.env.json
 
         echo 'Tutor lms.env.json contents:'
         cat lms.env.json
@@ -116,7 +59,7 @@ runs:
         echo ""
 
         mv cms.env.json cms.env.json.orig
-        jq -s '.[0] * .[1]'  cms.env.json.orig  "$GITHUB_WORKSPACE/ci/tutor-deploy/environments/$ENVIRONMENT_ID/settings_merge.json" >  cms.env.json
+        jq -s '.[0] * .[1]'  cms.env.json.orig  "$GITHUB_WORKSPACE/ci/tutor-deploy/environments/${{ inputs.environment-id }}/settings_merge.json" >  cms.env.json
         rm *orig
 
         echo 'Tutor cms.env.json contents:'

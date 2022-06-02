@@ -58,26 +58,26 @@ jobs:
           namespace: openedx-prod
 
       - name: Enable tutor plugin - Backup
-        uses: openedx-actions/tutor-enable-plugin-backup
+        uses: openedx-actions/tutor-enable-plugin-backup@v0.0.1
         if: ${{ env.ENABLE_BACKUP == 'true' }}
         with:
           aws-ecr-uri: 621672204142.dkr.ecr.us-east-2.amazonaws.com/openedx_backup:latest
           namespace: openedx-prod
 
       - name: Enable tutor plugin - Discovery
-        uses: openedx-actions/tutor-enable-plugin-discovery
+        uses: openedx-actions/tutor-enable-plugin-discovery@v0.0.1
         if: ${{ env.ENABLE_DISCOVERY == 'true' }}
         with:
           namespace: openedx-prod
 
       - name: Enable tutor plugin - MFE
-        uses: openedx-actions/tutor-enable-plugin-mfe
+        uses: openedx-actions/tutor-enable-plugin-mfe@v0.0.1
         if: ${{ env.ENABLE_MFE == 'true' }}
         with:
           aws-ecr-uri: 621672204142.dkr.ecr.us-east-2.amazonaws.com/openedx_mfe:latest
 
       - name: Enable tutor plugin - Credentials
-        uses: openedx-actions/tutor-enable-plugin-credentials
+        uses: openedx-actions/tutor-enable-plugin-credentials@v0.0.1
         if: ${{ env.ENABLE_CREDENTIALS == 'true' }}
         with:
           namespace: openedx-prod
@@ -85,25 +85,25 @@ jobs:
           common-logo-url: https://www.edx.org/images/logos/edx-logo-elm.svg
 
       - name: Enable tutor plugin - Xqueue
-        uses: openedx-actions/tutor-enable-plugin-xqueue
+        uses: openedx-actions/tutor-enable-plugin-xqueue@v0.0.1
         if: ${{ env.ENABLE_XQUEUE == 'true' }}
         with:
           namespace: openedx-prod
 
       - name: Enable tutor plugin - Notes
-        uses: openedx-actions/tutor-enable-plugin-notes
+        uses: openedx-actions/tutor-enable-plugin-notes@v0.0.1
         if: ${{ env.ENABLE_NOTES == 'true' }}
         with:
           namespace: openedx-prod
 
       - name: Enable tutor plugin - Ecommerce
-        uses: openedx-actions/tutor-enable-plugin-ecommerce
+        uses: openedx-actions/tutor-enable-plugin-ecommerce@v0.0.1
         if: ${{ env.ENABLE_ECOMMERCE == 'true' }}
         with:
           namespace: openedx-prod
 
       - name: Enable tutor plugin - Forum
-        uses: openedx-actions/tutor-enable-plugin-forum
+        uses: openedx-actions/tutor-enable-plugin-forum@v0.0.1
         if: ${{ env.ENABLE_FORUM == 'true' }}
 
       - name: test whether we can dump the tutor config to the console
