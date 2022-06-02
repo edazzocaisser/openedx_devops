@@ -52,15 +52,15 @@ runs:
     - name: Enable Tutor plugins
       uses: ./.github/workflows/tutor/deloy/plugins/tutor-enable-plugins
       with:
-        tutor-enable-plugin-s3: false
-        tutor-enable-plugin-backup: false
-        tutor-enable-plugin-discovery: false
-        tutor-enable-plugin-mfe: false
-        tutor-enable-plugin-credentials: false
-        tutor-enable-plugin-xqueue: false
-        tutor-enable-plugin-notes: false
-        tutor-enable-plugin-ecommerce: false
-        tutor-enable-plugin-forum: false
+        tutor-enable-plugin-s3: true
+        tutor-enable-plugin-backup: true
+        tutor-enable-plugin-discovery: true
+        tutor-enable-plugin-mfe: true
+        tutor-enable-plugin-credentials: true
+        tutor-enable-plugin-xqueue: true
+        tutor-enable-plugin-notes: true
+        tutor-enable-plugin-ecommerce: true
+        tutor-enable-plugin-forum: true
 
     # note that the Kubernetes additional config data is locally
     # stored in ci/tutor-deploy/environments/prod/k8s/
@@ -76,7 +76,7 @@ runs:
     # and AWS is neurotic about any changes to the config.
     # ---------------------------------------------------------------------------------
     - name: Configure SMTP
-      uses: ./.github/workflows/tutor/deploy/backend/tutor-configure-smtp
+      uses: openedx-actions/tutor-service-configure-smtp
       with:
         aws-ses-iam-key: ${{ secrets.aws-ses-iam-key }}
         aws-ses-iam-secret: ${{ secrets.aws-ses-iam-secret }}
