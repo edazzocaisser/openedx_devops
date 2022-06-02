@@ -125,3 +125,34 @@ jobs:
       - name: Enable tutor plugin - Forum
         uses: openedx-actions/tutor-enable-plugin-forum@v0.0.1
         if: ${{ env.ENABLE_FORUM == 'true' }}
+
+      # ---------------------------------------------------------------------------------
+      # Configure backend services
+      # ---------------------------------------------------------------------------------
+      - name: Configure SMTP
+        uses: openedx-actions/tutor-service-configure-smtp@v0.0.1
+        with:
+          aws-ses-iam-key: ${{ secrets.aws-ses-iam-key }}
+          aws-ses-iam-secret: ${{ secrets.aws-ses-iam-secret }}
+          aws-region: us-east-2
+
+      - name: Configure Redis
+        uses: openedx-actions/tutor-service-configure-redis@v0.0.1
+
+      - name: Configure MySQL
+        uses: openedx-actions/tutor-service-configure-mysql@v0.0.1
+
+      - name: Dump the config
+        shell: bash
+        run: |-
+          cat $(tutor config printroot)/config.yml
+          cat $(tutor config printroot)/env/apps/openedx/config/lms.env.json
+
+      # ---------------------------------------------------------------------------------
+      # Deploy
+      # ---------------------------------------------------------------------------------
+      #- name: Initialize environment
+      #  uses: ./.github/workflows/tutor/k8s/deploy
+      #  with:
+      #    environment-id: prod
+      #    namespace: openedx-prod
