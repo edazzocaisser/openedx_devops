@@ -132,6 +132,13 @@ jobs:
         uses: openedx-actions/tutor-plugin-enable-forum@v0.0.1
         if: ${{ env.ENABLE_FORUM == 'true' }}
 
+      - name: Jam docker image URIs
+        shell: bash
+        run: |-
+          tutor config save --set MFE_DOCKER_IMAGE=${AWS_ECR_REPOSITORY_MFE} \
+                            --set BACKUP_DOCKER_IMAGE=${AWS_ECR_REPOSITORY_BACKUP} \
+                            --set CREDENTIALS_DOCKER_IMAGE=${AWS_ECR_REPOSITORY_CREDENTIALS} \
+
       # ---------------------------------------------------------------------------------
       # Configure backend services
       # ---------------------------------------------------------------------------------
