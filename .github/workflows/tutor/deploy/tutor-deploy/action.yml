@@ -75,12 +75,18 @@ runs:
     # Note: We're not managing AWS SES with Terraform simply because the service is fiddly
     # and AWS is neurotic about any changes to the config.
     # ---------------------------------------------------------------------------------
-    - name: Setup AWS SES over SMTP
+    - name: Configure SMTP
       uses: ./.github/workflows/tutor/deploy/backend/tutor-configure-smtp
       with:
         aws-ses-iam-key: ${{ secrets.aws-ses-iam-key }}
         aws-ses-iam-secret: ${{ secrets.aws-ses-iam-secret }}
+        aws-region: us-east-2
 
+    - name: Configure Redis
+      uses: openedx-actions/tutor-service-configure-redis
+
+    - name: Configure MySQL
+      uses: openedx-actions/tutor-service-configure-mysql
 
     #------------------------------------------------------------------------
     # IV. Merge all of the configuration data into Tutor's Open edX

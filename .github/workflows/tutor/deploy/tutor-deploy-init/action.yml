@@ -50,7 +50,7 @@ runs:
     #   - API server endpoint
     #   - EKS Cluster ARN
     #   - Certificate authority (ie the private ssh key)
-    - name: Get Kube config
+    - name: Install and configure kubectl
       run: |-
         sudo snap install kubectl --channel=1.23/stable --classic
         aws eks --region us-east-2 update-kubeconfig --name mrionline-global-live --alias eks-prod
@@ -78,16 +78,6 @@ runs:
         echo "TUTOR_ROOT=$GITHUB_WORKSPACE/tutor" >> $GITHUB_ENV
         pip install tutor
         echo "TUTOR_VERSION=$(tutor --version | cut -f3 -d' ')" >> $GITHUB_ENV
-      shell: bash
-
-    # retrieve the Redis connection parameter that we created in Terraform:
-    #   REDIS_HOST: redis.app.mrionline.com
-    #
-    # see: https://github.com/Medality-Health/openedx_devops/blob/main/terraform/modules/redis/main.tf
-    - name: fetch Redis configuration from Kubernetes secrets
-      run: |-
-        echo "TUTOR_RUN_REDIS=false" >> $GITHUB_ENV
-        kubectl get secret redis -n ${{ inputs.namespace }}  -o json | jq  '.data | map_values(@base64d)' | jq -r 'keys[] as $k | "TUTOR_\($k|ascii_upcase)=\(.[$k])"' >> $GITHUB_ENV
       shell: bash
 
 

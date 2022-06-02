@@ -19,6 +19,9 @@ inputs:
   aws-ses-iam-secret:
     description: 'AWS IAM secret for AWS SES email service'
     required: true
+  aws-region:
+    description: 'The AWS region in which AWS SES service is hosted. Example: us-east-2'
+    required: true
 runs:
   using: "composite"
   steps:
@@ -30,8 +33,8 @@ runs:
       run: |-
         echo "TUTOR_RUN_SMTP=true" >> $GITHUB_ENV
         tutor config save --set EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend" \
-                          --set EMAIL_HOST="email-smtp.us-east-2.amazonaws.com" \
-                          --set EMAIL_HOST_PASSWORD=${{ secrets.aws-ses-iam-key }} \
-                          --set EMAIL_HOST_USER=${{ secrets.aws-ses-iam-secret }} \
+                          --set EMAIL_HOST="email-smtp.${{ inputs.aws-region }}.amazonaws.com" \
+                          --set EMAIL_HOST_PASSWORD=${{ inputs.aws-ses-iam-key }} \
+                          --set EMAIL_HOST_USER=${{ inputs.aws-ses-iam-secret }} \
                           --set EMAIL_PORT=587 \
                           --set EMAIL_USE_TLS=true
