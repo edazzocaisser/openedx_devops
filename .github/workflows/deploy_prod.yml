@@ -166,7 +166,7 @@ jobs:
       # ---------------------------------------------------------------------------------
       # Deploy
       # ---------------------------------------------------------------------------------
-      - name: Initialize environment
+      - name: Deploy to Kubernetes
         uses: ./.github/workflows/tutor/k8s/deploy
         with:
           environment-id: prod
