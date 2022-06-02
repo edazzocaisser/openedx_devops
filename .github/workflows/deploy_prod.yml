@@ -1,10 +1,9 @@
 #------------------------------------------------------------------------------
 # written by: mcdaniel
-# date: feb-2022
+# date: june-2022
 #
 # usage: top-level workflow. Initiated manually from Github Actions console page
 #        Deploys a Tutor-created openedx Docker image to the Kubernetes cluster.
-#        The openedx docker image is created by a Github action in tutor-build.git.
 #------------------------------------------------------------------------------
 name: Deploy Open edX prod to Kubernetes
 
@@ -15,10 +14,18 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      ENVIRONMENT_ID: prod
-      NAMESPACE: openedx-prod
+      # common settings
+      # --------------------------------------------
       AWS_ACCOUNT_NUMBER: '123456789012'
       AWS_ECR_HOST: 'dkr.ecr.us-east-2.amazonaws.com'
+
+      # environment settings
+      # --------------------------------------------
+      ENVIRONMENT_ID: prod
+      NAMESPACE: openedx-prod
+
+      # feature flags for optional tutor modules
+      # --------------------------------------------
       ENABLE_S3: true
       ENABLE_BACKUP: true
       ENABLE_DISCOVERY: true

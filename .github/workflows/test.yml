@@ -12,9 +12,21 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  test:
     runs-on: ubuntu-latest
     env:
+      # common settings
+      # --------------------------------------------
+      AWS_ACCOUNT_NUMBER: '123456789012'
+      AWS_ECR_HOST: 'dkr.ecr.us-east-2.amazonaws.com'
+
+      # environment settings
+      # --------------------------------------------
+      ENVIRONMENT_ID: prod
+      NAMESPACE: openedx-prod
+
+      # feature flags for optional tutor modules
+      # --------------------------------------------
       ENABLE_S3: true
       ENABLE_BACKUP: true
       ENABLE_DISCOVERY: true
@@ -24,33 +36,41 @@ jobs:
       ENABLE_NOTES: true
       ENABLE_ECOMMERCE: true
       ENABLE_FORUM: true
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3.0.2
 
-      # grab the AWS IAM key and scret for the IAM user named 'ci'
-      # These are manually stored in https://github.com/Medality-Health/openedx_devops/settings
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1.6.1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-2
+      # ---------------------------------------------------------------------------------
+      # initialize workflow environment variables
+      # ---------------------------------------------------------------------------------
+      - name: Intialize AWS_ECR_URI
+        shell: bash
+        run: |-
+          echo "AWS_ECR_URI=${{ env.AWS_ACCOUNT_NUMBER }}.${{ env.AWS_ECR_HOST }}" >> $GITHUB_ENV
 
-      - name: Tutor deploy init
-        uses: ./.github/workflows/tutor/deploy/tutor-deploy-init
+      - name: Intialize AWS ECR repo URIs
+        shell: bash
+        run: |-
+          echo "AWS_ECR_REPOSITORY_BACKUP=${AWS_ECR_URI}/openedx_backup:latest" >> $GITHUB_ENV
+          echo "AWS_ECR_REPOSITORY_CREDENTIALS=${AWS_ECR_URI}/openedx_credentials:latest" >> $GITHUB_ENV
+          echo "AWS_ECR_REPOSITORY_MFE=${AWS_ECR_URI}/openedx_mfe:latest" >> $GITHUB_ENV
+          echo "AWS_ECR_REPOSITORY_OPENEDX=${AWS_ECR_URI}/openedx:latest" >> $GITHUB_ENV
+
+      # ---------------------------------------------------------------------------------
+      # initialize this Github workspace environment: python, tutor, kubectl, aws cli
+      # ---------------------------------------------------------------------------------
+      - name: Initialize environment
+        uses: ./.github/workflows/tutor/k8s/init
         with:
           environment-id: prod
           namespace: openedx-prod
           openedx-common-version: open-release/maple.3
+          aws-ecr-uri: ${AWS_ECR_REPOSITORY_OPENEDX}
 
-      - name: test whether installed software works here
-        run: |-
-          kubectl version --short
-          echo
-          echo "aws cli version:"
-          aws --version
-
+      # ---------------------------------------------------------------------------------
+      # Configure optional tutor plugins
+      # ---------------------------------------------------------------------------------
       - name: Enable tutor plugin - S3
         uses: openedx-actions/tutor-enable-plugin-s3
         if: ${{ env.ENABLE_S3 == 'true' }}
@@ -61,7 +81,7 @@ jobs:
         uses: openedx-actions/tutor-enable-plugin-backup@v0.0.1
         if: ${{ env.ENABLE_BACKUP == 'true' }}
         with:
-          aws-ecr-uri: 621672204142.dkr.ecr.us-east-2.amazonaws.com/openedx_backup:latest
+          aws-ecr-uri: ${AWS_ECR_REPOSITORY_BACKUPS}
           namespace: openedx-prod
 
       - name: Enable tutor plugin - Discovery
@@ -74,14 +94,14 @@ jobs:
         uses: openedx-actions/tutor-enable-plugin-mfe@v0.0.1
         if: ${{ env.ENABLE_MFE == 'true' }}
         with:
-          aws-ecr-uri: 621672204142.dkr.ecr.us-east-2.amazonaws.com/openedx_mfe:latest
+          aws-ecr-uri: ${AWS_ECR_REPOSITORY_MFE}
 
       - name: Enable tutor plugin - Credentials
         uses: openedx-actions/tutor-enable-plugin-credentials@v0.0.1
         if: ${{ env.ENABLE_CREDENTIALS == 'true' }}
         with:
           namespace: openedx-prod
-          aws-ecr-uri: 621672204142.dkr.ecr.us-east-2.amazonaws.com/openedx_credentials:latest
+          aws-ecr-uri: ${AWS_ECR_REPOSITORY_CREDENTIALS}
           common-logo-url: https://www.edx.org/images/logos/edx-logo-elm.svg
 
       - name: Enable tutor plugin - Xqueue
@@ -106,7 +126,33 @@ jobs:
         uses: openedx-actions/tutor-enable-plugin-forum@v0.0.1
         if: ${{ env.ENABLE_FORUM == 'true' }}
 
-      - name: test whether we can dump the tutor config to the console
+      # ---------------------------------------------------------------------------------
+      # Configure backend services
+      # ---------------------------------------------------------------------------------
+      - name: Configure SMTP
+        uses: openedx-actions/tutor-service-configure-smtp@v0.0.1
+        with:
+          aws-ses-iam-key: ${{ secrets.aws-ses-iam-key }}
+          aws-ses-iam-secret: ${{ secrets.aws-ses-iam-secret }}
+          aws-region: us-east-2
+
+      - name: Configure Redis
+        uses: openedx-actions/tutor-service-configure-redis@v0.0.1
+
+      - name: Configure MySQL
+        uses: openedx-actions/tutor-service-configure-mysql@v0.0.1
+
+      - name: Dump the config
+        shell: bash
         run: |-
-          echo $(tutor config printroot)/config.yml
           cat $(tutor config printroot)/config.yml
+          cat $(tutor config printroot)/env/apps/openedx/config/lms.env.json
+
+      # ---------------------------------------------------------------------------------
+      # Deploy
+      # ---------------------------------------------------------------------------------
+      #- name: Initialize environment
+      #  uses: ./.github/workflows/tutor/k8s/deploy
+      #  with:
+      #    environment-id: prod
+      #    namespace: openedx-prod

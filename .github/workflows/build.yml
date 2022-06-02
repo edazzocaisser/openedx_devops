@@ -1,11 +1,11 @@
 #------------------------------------------------------------------------------
 # written by: mcdaniel
-# date: feb-2022
+# date: june-2022
 #
 # usage: top-level workflow. Initiated manually from Github Actions console page
 #        Builds all Docker containers.
 #------------------------------------------------------------------------------
-name: Deploy Open edX prod to Kubernetes
+name: Build Containers and upload to AWS ECR
 
 on:
   workflow_dispatch:
