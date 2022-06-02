@@ -14,6 +14,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
+      ENABLE_BACKUP: true
+      ENABLE_CREDENTIALS: true
+      ENABLE_MFE: true
+
       SUBDOMAIN: app
       DOMAIN_NAME: mrionline.com
       SITE_NAME: MRI Online
@@ -43,13 +47,16 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${AWS_REGION}
 
-      - name: Build the image and upload to AWS ECR
+      - name: Build Backup
+        if: ${{ env.ENABLE_BACKUP == 'true' }}
         uses: openedx-actions/tutor-plugin-build-backup@v0.1.2
 
       - name: Build Credentials
+        if: ${{ env.ENABLE_CREDENTIALS == 'true' }}
         uses: openedx-actions/tutor-plugin-build-credentials@v0.1.1
 
-      - name: Build the MFE image and upload to AWS ECR
+      - name: Build MFE
+        if: ${{ env.ENABLE_MFE == 'true' }}
         uses: openedx-actions/tutor-plugin-build-mfe@v0.1.1
         with:
           subdomain: ${SUBDOMAIN}
