@@ -28,6 +28,7 @@ runs:
     # in Kubernetes manifest yaml format
     # ---------------------------------------------------------------------------------
     - name: Create Kubernetes add-on resources
+      shell: bash
       run:  |-
         # Create kubernetes ingress and other environment resources
         kubectl apply -f "ci/tutor-deploy/environments/${{ inputs.environment-id }}/k8s"
@@ -42,6 +43,7 @@ runs:
     # 3. LMS and CMS application configuration data stored in our repo at ci/tutor-deploy/environments/prod/settings_merge.json
     #------------------------------------------------------------------------
     - name: Patch Generated Configuration (Static)
+      shell: bash
       run:  |-
         echo "config.yml full path: $(tutor config printroot)/config.yml"
         cat "$(tutor config printroot)/config.yml"
@@ -71,18 +73,22 @@ runs:
     # V. Deploy Open edX
     #------------------------------------------------------------------------
     - name: Deploy Tutor
+      shell: bash
       run:  |-
         tutor k8s start
 
     - name: Run tutor init
+      shell: bash
       run:  |-
         tutor k8s init
 
     - name: Set theme
+      shell: bash
       run:  |-
         tutor k8s settheme edx-theme
 
     - name: Create admin user
+      shell: bash
       run:  |-
         $(kubectl get secret admin-edx -n ${{ inputs.namespace }}  -o json | jq  '.data | map_values(@base64d)' |   jq -r 'keys[] as $k | "export \($k|ascii_upcase)=\(.[$k])"')
         tutor k8s createuser --password "$ADMIN_PASSWORD" --staff --superuser "$ADMIN_USER" admin@mrionline.com
