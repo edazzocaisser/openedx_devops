@@ -76,6 +76,9 @@ jobs:
           openedx-common-version: open-release/maple.3
           aws-ecr-uri: ${AWS_ECR_REPOSITORY_OPENEDX}
 
+      - name: Dump tutor config
+        uses: ./.github/workflows/tutor/dump-config
+
       # ---------------------------------------------------------------------------------
       # Configure optional tutor plugins
       # ---------------------------------------------------------------------------------
@@ -165,25 +168,9 @@ jobs:
         with:
           namespace: openedx-prod
 
-      - name: Dump the config
-        shell: bash
-        run: |-
+      - name: Dump tutor config
+        uses: ./.github/workflows/tutor/dump-config
 
-          echo 'apps:'
-          echo '-------------------------------------'
-          ls $(tutor config printroot)/env/apps -lha
-
-          echo 'plugins:'
-          echo '-------------------------------------'
-          ls $(tutor config printroot)/env/plugins -lha
-
-          echo 'config.yml:'
-          echo '-------------------------------------'
-          cat $(tutor config printroot)/config.yml
-          echo
-          echo 'lms.env.json:'
-          echo '-------------------------------------'
-          cat $(tutor config printroot)/env/apps/openedx/config/lms.env.json
 
       # ---------------------------------------------------------------------------------
       # Deploy

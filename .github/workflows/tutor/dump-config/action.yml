@@ -1,0 +1,31 @@
+#------------------------------------------------------------------------------
+# written by: mcdaniel
+# date: june-2022
+#
+#------------------------------------------------------------------------------
+name: Dump tutor config to the console
+branding:
+  icon: 'cloud'
+  color: 'orange'
+runs:
+  using: "composite"
+  steps:
+    - name: Dump tutor config
+      shell: bash
+      run: |-
+
+        echo 'apps:'
+        echo '-------------------------------------'
+        ls $(tutor config printroot)/env/apps -lha
+
+        echo 'plugins:'
+        echo '-------------------------------------'
+        ls $(tutor config printroot)/env/plugins -lha
+
+        echo 'config.yml:'
+        echo '-------------------------------------'
+        cat $(tutor config printroot)/config.yml
+        echo
+        echo 'lms.env.json:'
+        echo '-------------------------------------'
+        cat $(tutor config printroot)/env/apps/openedx/config/lms.env.json
