@@ -143,10 +143,10 @@ jobs:
           aws-region: us-east-2
 
       - name: Configure Redis
-        uses: openedx-actions/tutor-service-configure-redis@v0.0.1
+        uses: openedx-actions/tutor-service-configure-redis@v0.0.2
 
       - name: Configure MySQL
-        uses: openedx-actions/tutor-service-configure-mysql@v0.0.1
+        uses: openedx-actions/tutor-service-configure-mysql@v0.0.2
 
       # ---------------------------------------------------------------------------------
       # Deploy
