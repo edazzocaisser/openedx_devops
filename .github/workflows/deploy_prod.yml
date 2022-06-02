@@ -78,7 +78,7 @@ jobs:
       # Configure optional tutor plugins
       # ---------------------------------------------------------------------------------
       - name: Enable tutor plugin - S3
-        uses: openedx-actions/tutor-plugin-enable-s3@v0.0.1
+        uses: openedx-actions/tutor-plugin-enable-s3@v0.0.2
         if: ${{ env.ENABLE_S3 == 'true' }}
         with:
           namespace: openedx-prod
