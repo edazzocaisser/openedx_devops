@@ -10,22 +10,38 @@ branding:
 runs:
   using: "composite"
   steps:
-    - name: Dump tutor config
+    - name: Dump tutor config apps folder
       shell: bash
+      continue-on-error: true
       run: |-
-
         echo 'apps:'
         echo '-------------------------------------'
         ls $(tutor config printroot)/env/apps -lha
 
+    - name: Dump tutor config plugins folder
+      shell: bash
+      continue-on-error: true
+      run: |-
         echo 'plugins:'
         echo '-------------------------------------'
         ls $(tutor config printroot)/env/plugins -lha
 
+    - name: Dump tutor config.yml
+      shell: bash
+      continue-on-error: true
+      run: |-
         echo 'config.yml:'
         echo '-------------------------------------'
         cat $(tutor config printroot)/config.yml
-        echo
+
+        echo 'lms.env.json:'
+        echo '-------------------------------------'
+        cat $(tutor config printroot)/env/apps/openedx/config/lms.env.json
+
+    - name: Dump tutor openedx/config/lms.env.json
+      shell: bash
+      continue-on-error: true
+      run: |-
         echo 'lms.env.json:'
         echo '-------------------------------------'
         cat $(tutor config printroot)/env/apps/openedx/config/lms.env.json
