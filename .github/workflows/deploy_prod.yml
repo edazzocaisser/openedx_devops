@@ -132,7 +132,11 @@ jobs:
         uses: openedx-actions/tutor-plugin-enable-forum@v0.0.1
         if: ${{ env.ENABLE_FORUM == 'true' }}
 
-      - name: Jam docker image URIs
+      # ---------------------------------------------------------------------------------
+      # Configure URIs for Docker containers stored in AWS ECR
+      # ---------------------------------------------------------------------------------
+
+      - name: Set Docker container URI's
         shell: bash
         run: |-
           tutor config save --set MFE_DOCKER_IMAGE=${AWS_ECR_REPOSITORY_MFE} \
