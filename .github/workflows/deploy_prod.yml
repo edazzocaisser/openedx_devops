@@ -92,7 +92,7 @@ jobs:
         uses: ./.github/actions/tutor/print-config
 
       - name: Enable tutor plugin - Backup
-        uses: openedx-actions/tutor-plugin-enable-backup@v0.0.2
+        uses: openedx-actions/tutor-plugin-enable-backup@v0.0.7
         if: ${{ env.ENABLE_BACKUP == 'true' }}
         with:
           aws-ecr-uri: ${AWS_ECR_REPOSITORY_BACKUPS}
