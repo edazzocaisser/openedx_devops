@@ -149,6 +149,7 @@ jobs:
         uses: openedx-actions/tutor-plugin-enable-forum@v0.0.1
         if: ${{ env.ENABLE_FORUM == 'true' }}
 
+
       # ---------------------------------------------------------------------------------
       # Configure URIs for Docker containers stored in AWS ECR
       # ---------------------------------------------------------------------------------
@@ -183,6 +184,75 @@ jobs:
       - name: Dump tutor config
         uses: ./.github/actions/tutor/print-dump
 
+
+      # ---------------------------------------------------------------------------------
+      # force plugins to be enabled
+      # ---------------------------------------------------------------------------------
+      - name: Enable tutor plugin - Forum II
+        shell: bash
+        run: |-
+          tutor plugins enable forum
+          tutor config save
+        if: ${{ env.ENABLE_FORUM == 'true' }}
+
+      - name: Enable tutor plugin - Discovery II
+        shell: bash
+        run: |-
+          tutor plugins enable discovery
+          tutor config save
+        if: ${{ env.ENABLE_DISCOVERY == 'true' }}
+
+      - name: Enable tutor plugin - Xqueue II
+        shell: bash
+        run: |-
+          tutor plugins enable xqueue
+          tutor config save
+        if: ${{ env.ENABLE_XQUEUE == 'true' }}
+
+      - name: Enable tutor plugin - Notes II
+        shell: bash
+        run: |-
+          tutor plugins enable notes
+          tutor config save
+        if: ${{ env.ENABLE_NOTES == 'true' }}
+
+      - name: Enable tutor plugin - Ecommerce II
+        shell: bash
+        run: |-
+          tutor plugins enable ecommerce
+          tutor config save
+        if: ${{ env.ENABLE_ECOMMERCE == 'true' }}
+
+      - name: Enable tutor plugin - S3 II
+        shell: bash
+        run: |-
+          tutor plugins enable s3
+          tutor config save
+        if: ${{ env.ENABLE_S3 == 'true' }}
+
+      - name: Enable tutor plugin - MFE II
+        shell: bash
+        run: |-
+          tutor plugins enable mfe
+          tutor config save
+        if: ${{ env.ENABLE_MFE == 'true' }}
+
+      - name: Enable tutor plugin - Backup II
+        shell: bash
+        run: |-
+          tutor plugins enable backup
+          tutor config save
+        if: ${{ env.ENABLE_BACKUP == 'true' }}
+
+      - name: Enable tutor plugin - Credentials II
+        shell: bash
+        run: |-
+          tutor plugins enable credentials
+          tutor config save
+        if: ${{ env.ENABLE_CREDENTIALS == 'true' }}
+
+      - name: Dump tutor config.yml
+        uses: ./.github/actions/tutor/print-config
 
       # ---------------------------------------------------------------------------------
       # Deploy
