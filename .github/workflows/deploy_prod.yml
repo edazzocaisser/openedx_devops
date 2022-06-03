@@ -148,19 +148,19 @@ jobs:
       # Configure backend services
       # ---------------------------------------------------------------------------------
       - name: Configure SMTP
-        uses: openedx-actions/tutor-service-configure-smtp@v0.0.2
+        uses: openedx-actions/tutor-k8s-configure-smtp@v0.0.2
         with:
           aws-ses-iam-key: ${{ secrets.aws-ses-iam-key }}
           aws-ses-iam-secret: ${{ secrets.aws-ses-iam-secret }}
           aws-region: us-east-2
 
       - name: Configure Redis
-        uses: openedx-actions/tutor-service-configure-redis@v0.0.2
+        uses: openedx-actions/tutor-k8s-configure-redis@v0.0.2
         with:
           namespace: openedx-prod
 
       - name: Configure MySQL
-        uses: openedx-actions/tutor-service-configure-mysql@v0.0.3
+        uses: openedx-actions/tutor-k8s-configure-mysql@v0.0.3
         with:
           namespace: openedx-prod
 
