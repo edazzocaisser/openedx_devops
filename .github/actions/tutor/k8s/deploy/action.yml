@@ -50,7 +50,7 @@ runs:
         echo ""
         echo ""
 
-        cd $TUTOR_ROOT/env/apps/openedx/config/
+        cd $(tutor config printroot)/env/apps/openedx/config/
 
         mv lms.env.json lms.env.json.orig
         jq -s '.[0] * .[1]'  lms.env.json.orig  "$GITHUB_WORKSPACE/ci/tutor-deploy/environments/${{ inputs.environment-id }}/settings_merge.json" >  lms.env.json

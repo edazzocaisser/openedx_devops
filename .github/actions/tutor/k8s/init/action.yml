@@ -80,9 +80,11 @@ runs:
       shell: bash
       run: |-
         pip install --upgrade pyyaml
-        echo "TUTOR_ROOT=$GITHUB_WORKSPACE/tutor" >> $GITHUB_ENV
+        #echo "TUTOR_ROOT=$GITHUB_WORKSPACE/tutor" >> $GITHUB_ENV
         pip install tutor
         echo "TUTOR_VERSION=$(tutor --version | cut -f3 -d' ')" >> $GITHUB_ENV
+        echo tutor root: $(tutor config printroot)
+        echo TUTOR_ROOT: ${TUTOR_ROOT}
 
 
     - name: Configure 3rd Party Authentication
