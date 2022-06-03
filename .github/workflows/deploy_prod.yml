@@ -26,6 +26,7 @@ jobs:
 
       # feature flags for optional tutor modules
       # --------------------------------------------
+      DEBUG_MODE: true
       ENABLE_BACKUP: true
       ENABLE_CREDENTIALS: true
       ENABLE_DISCOVERY: true
@@ -75,6 +76,7 @@ jobs:
           aws-ecr-uri: ${AWS_ECR_REPOSITORY_OPENEDX}
 
       - name: Dump tutor config
+        if: ${{ env.DEBUG_MODE == 'true' }}
         uses: ./.github/actions/tutor/print-dump
 
       # ---------------------------------------------------------------------------------
@@ -87,6 +89,7 @@ jobs:
           namespace: openedx-prod
 
       - name: Dump tutor config.yml
+        if: ${{ env.DEBUG_MODE == 'true' }}
         uses: ./.github/actions/tutor/print-config
 
       - name: Enable tutor plugin - Backup
@@ -96,6 +99,10 @@ jobs:
           aws-ecr-uri: ${AWS_ECR_REPOSITORY_BACKUPS}
           namespace: openedx-prod
 
+      - name: Dump tutor config.yml
+        if: ${{ env.DEBUG_MODE == 'true' }}
+        uses: ./.github/actions/tutor/print-config
+
       - name: Enable tutor plugin - Discovery
         uses: openedx-actions/tutor-plugin-enable-discovery@v0.0.1
         if: ${{ env.ENABLE_DISCOVERY == 'true' }}
@@ -103,6 +110,7 @@ jobs:
           namespace: openedx-prod
 
       - name: Dump tutor config.yml
+        if: ${{ env.DEBUG_MODE == 'true' }}
         uses: ./.github/actions/tutor/print-config
 
       - name: Enable tutor plugin - MFE
@@ -110,6 +118,10 @@ jobs:
         if: ${{ env.ENABLE_MFE == 'true' }}
         with:
           aws-ecr-uri: ${AWS_ECR_REPOSITORY_MFE}
+
+      - name: Dump tutor config.yml
+        if: ${{ env.DEBUG_MODE == 'true' }}
+        uses: ./.github/actions/tutor/print-config
 
       - name: Enable tutor plugin - Credentials
         uses: openedx-actions/tutor-plugin-enable-credentials@v0.0.2
@@ -120,6 +132,7 @@ jobs:
           common-logo-url: https://www.edx.org/images/logos/edx-logo-elm.svg
 
       - name: Dump tutor config.yml
+        if: ${{ env.DEBUG_MODE == 'true' }}
         uses: ./.github/actions/tutor/print-config
 
       - name: Enable tutor plugin - Xqueue
@@ -129,6 +142,7 @@ jobs:
           namespace: openedx-prod
 
       - name: Dump tutor config.yml
+        if: ${{ env.DEBUG_MODE == 'true' }}
         uses: ./.github/actions/tutor/print-config
 
       - name: Enable tutor plugin - Notes
@@ -138,6 +152,7 @@ jobs:
           namespace: openedx-prod
 
       - name: Dump tutor config.yml
+        if: ${{ env.DEBUG_MODE == 'true' }}
         uses: ./.github/actions/tutor/print-config
 
       - name: Enable tutor plugin - Ecommerce
@@ -147,11 +162,16 @@ jobs:
           namespace: openedx-prod
 
       - name: Dump tutor config.yml
+        if: ${{ env.DEBUG_MODE == 'true' }}
         uses: ./.github/actions/tutor/print-config
 
       - name: Enable tutor plugin - Forum
         uses: openedx-actions/tutor-plugin-enable-forum@v0.0.1
         if: ${{ env.ENABLE_FORUM == 'true' }}
+
+      - name: Dump tutor config.yml
+        if: ${{ env.DEBUG_MODE == 'true' }}
+        uses: ./.github/actions/tutor/print-config
 
 
       # ---------------------------------------------------------------------------------
@@ -175,10 +195,18 @@ jobs:
           aws-ses-iam-secret: ${{ secrets.aws-ses-iam-secret }}
           aws-region: us-east-2
 
+      - name: Dump tutor config.yml
+        if: ${{ env.DEBUG_MODE == 'true' }}
+        uses: ./.github/actions/tutor/print-config
+
       - name: Configure Redis
         uses: openedx-actions/tutor-service-configure-redis@v0.0.2
         with:
           namespace: openedx-prod
+
+      - name: Dump tutor config.yml
+        if: ${{ env.DEBUG_MODE == 'true' }}
+        uses: ./.github/actions/tutor/print-config
 
       - name: Configure MySQL
         uses: openedx-actions/tutor-service-configure-mysql@v0.0.2
@@ -186,6 +214,7 @@ jobs:
           namespace: openedx-prod
 
       - name: Dump tutor config
+        if: ${{ env.DEBUG_MODE == 'true' }}
         uses: ./.github/actions/tutor/print-dump
 
 
