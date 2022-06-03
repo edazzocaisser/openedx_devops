@@ -167,5 +167,4 @@ runs:
     - name: Save tutor configuration data
       shell: bash
       run: |-
-        tutor plugins disable all
         tutor config save
