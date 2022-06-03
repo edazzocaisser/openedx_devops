@@ -1,0 +1,192 @@
+#------------------------------------------------------------------------------
+# written by: mcdaniel
+# date: june-2022
+#
+# usage: top-level workflow. Initiated manually from Github Actions console page
+#        Deploys a Tutor-created openedx Docker image to the Kubernetes cluster.
+#------------------------------------------------------------------------------
+name: Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      # common settings
+      # --------------------------------------------
+      AWS_ACCOUNT_NUMBER: '621672204142'
+      AWS_ECR_HOST: 'dkr.ecr.us-east-2.amazonaws.com'
+
+      # environment settings
+      # --------------------------------------------
+      ENVIRONMENT_ID: prod
+      NAMESPACE: openedx-prod
+
+      # feature flags for optional tutor modules
+      # --------------------------------------------
+      ENABLE_S3: true
+      ENABLE_BACKUP: true
+
+      ENABLE_FORUM: false
+      ENABLE_DISCOVERY: false
+      ENABLE_XQUEUE: false
+      ENABLE_NOTES: false
+      ENABLE_ECOMMERCE: false
+      ENABLE_CREDENTIALS: false
+
+      ENABLE_MFE: false
+
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3.0.2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1.6.1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+
+      # ---------------------------------------------------------------------------------
+      # initialize workflow environment variables
+      # ---------------------------------------------------------------------------------
+      - name: Intialize AWS_ECR_URI
+        shell: bash
+        run: |-
+          echo "AWS_ECR_URI=${{ env.AWS_ACCOUNT_NUMBER }}.${{ env.AWS_ECR_HOST }}" >> $GITHUB_ENV
+
+      - name: Intialize AWS ECR repo URIs
+        shell: bash
+        run: |-
+          echo "AWS_ECR_REPOSITORY_BACKUP=${AWS_ECR_URI}/openedx_backup:latest" >> $GITHUB_ENV
+          echo "AWS_ECR_REPOSITORY_CREDENTIALS=${AWS_ECR_URI}/openedx_credentials:latest" >> $GITHUB_ENV
+          echo "AWS_ECR_REPOSITORY_MFE=${AWS_ECR_URI}/openedx_mfe:latest" >> $GITHUB_ENV
+          echo "AWS_ECR_REPOSITORY_OPENEDX=${AWS_ECR_URI}/openedx:latest" >> $GITHUB_ENV
+
+      # ---------------------------------------------------------------------------------
+      # initialize this Github workspace environment: python, tutor, kubectl, aws cli
+      # ---------------------------------------------------------------------------------
+      - name: Initialize environment
+        uses: ./.github/actions/tutor/k8s/init
+        with:
+          environment-id: prod
+          namespace: openedx-prod
+          openedx-common-version: open-release/maple.3
+          aws-ecr-uri: ${AWS_ECR_REPOSITORY_OPENEDX}
+
+      - name: Dump tutor config
+        uses: ./.github/actions/tutor/print-dump
+
+      # ---------------------------------------------------------------------------------
+      # Configure optional tutor plugins
+      # ---------------------------------------------------------------------------------
+      - name: Enable tutor plugin - S3
+        uses: openedx-actions/tutor-plugin-enable-s3@v0.0.3
+        if: ${{ env.ENABLE_S3 == 'true' }}
+        with:
+          namespace: openedx-prod
+
+      - name: Dump tutor config.yml
+        uses: ./.github/actions/tutor/print-config
+
+      - name: Enable tutor plugin - Backup
+        uses: openedx-actions/tutor-plugin-enable-backup@v0.0.3
+        if: ${{ env.ENABLE_BACKUP == 'true' }}
+        with:
+          aws-ecr-uri: ${AWS_ECR_REPOSITORY_BACKUPS}
+          namespace: openedx-prod
+
+      - name: Enable tutor plugin - Discovery
+        uses: openedx-actions/tutor-plugin-enable-discovery@v0.0.1
+        if: ${{ env.ENABLE_DISCOVERY == 'true' }}
+        with:
+          namespace: openedx-prod
+
+      - name: Dump tutor config.yml
+        uses: ./.github/actions/tutor/print-config
+
+      - name: Enable tutor plugin - MFE
+        uses: openedx-actions/tutor-plugin-enable-mfe@v0.0.1
+        if: ${{ env.ENABLE_MFE == 'true' }}
+        with:
+          aws-ecr-uri: ${AWS_ECR_REPOSITORY_MFE}
+
+      - name: Enable tutor plugin - Credentials
+        uses: openedx-actions/tutor-plugin-enable-credentials@v0.0.2
+        if: ${{ env.ENABLE_CREDENTIALS == 'true' }}
+        with:
+          namespace: openedx-prod
+          aws-ecr-uri: ${AWS_ECR_REPOSITORY_CREDENTIALS}
+          common-logo-url: https://www.edx.org/images/logos/edx-logo-elm.svg
+
+      - name: Dump tutor config.yml
+        uses: ./.github/actions/tutor/print-config
+
+      - name: Enable tutor plugin - Xqueue
+        uses: openedx-actions/tutor-plugin-enable-xqueue@v0.0.1
+        if: ${{ env.ENABLE_XQUEUE == 'true' }}
+        with:
+          namespace: openedx-prod
+
+      - name: Dump tutor config.yml
+        uses: ./.github/actions/tutor/print-config
+
+      - name: Enable tutor plugin - Notes
+        uses: openedx-actions/tutor-plugin-enable-notes@v0.0.1
+        if: ${{ env.ENABLE_NOTES == 'true' }}
+        with:
+          namespace: openedx-prod
+
+      - name: Dump tutor config.yml
+        uses: ./.github/actions/tutor/print-config
+
+      - name: Enable tutor plugin - Ecommerce
+        uses: openedx-actions/tutor-plugin-enable-ecommerce@v0.0.1
+        if: ${{ env.ENABLE_ECOMMERCE == 'true' }}
+        with:
+          namespace: openedx-prod
+
+      - name: Dump tutor config.yml
+        uses: ./.github/actions/tutor/print-config
+
+      - name: Enable tutor plugin - Forum
+        uses: openedx-actions/tutor-plugin-enable-forum@v0.0.1
+        if: ${{ env.ENABLE_FORUM == 'true' }}
+
+
+      # ---------------------------------------------------------------------------------
+      # Configure URIs for Docker containers stored in AWS ECR
+      # ---------------------------------------------------------------------------------
+
+      - name: Set Docker container URI's
+        shell: bash
+        run: |-
+          tutor config save --set MFE_DOCKER_IMAGE=${AWS_ECR_REPOSITORY_MFE} \
+                            --set BACKUP_DOCKER_IMAGE=${AWS_ECR_REPOSITORY_BACKUP} \
+                            --set CREDENTIALS_DOCKER_IMAGE=${AWS_ECR_REPOSITORY_CREDENTIALS} \
+
+      # ---------------------------------------------------------------------------------
+      # Configure backend services
+      # ---------------------------------------------------------------------------------
+      - name: Configure SMTP
+        uses: openedx-actions/tutor-service-configure-smtp@v0.0.2
+        with:
+          aws-ses-iam-key: ${{ secrets.aws-ses-iam-key }}
+          aws-ses-iam-secret: ${{ secrets.aws-ses-iam-secret }}
+          aws-region: us-east-2
+
+      - name: Configure Redis
+        uses: openedx-actions/tutor-service-configure-redis@v0.0.2
+        with:
+          namespace: openedx-prod
+
+      - name: Configure MySQL
+        uses: openedx-actions/tutor-service-configure-mysql@v0.0.2
+        with:
+          namespace: openedx-prod
+
+      - name: Dump tutor config
+        uses: ./.github/actions/tutor/print-dump

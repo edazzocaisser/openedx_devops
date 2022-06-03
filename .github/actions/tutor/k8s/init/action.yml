@@ -58,6 +58,7 @@ runs:
       shell: bash
       run: |-
         sudo snap install kubectl --channel=1.23/stable --classic
+        sudo snap install yq
         aws eks --region us-east-2 update-kubeconfig --name mrionline-global-live --alias eks-prod
 
     - name: Check environments versions
