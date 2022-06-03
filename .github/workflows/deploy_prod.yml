@@ -114,7 +114,7 @@ jobs:
           aws-ecr-uri: ${AWS_ECR_REPOSITORY_MFE}
 
       - name: Enable tutor plugin - Credentials
-        uses: openedx-actions/tutor-plugin-enable-credentials@v0.0.1
+        uses: openedx-actions/tutor-plugin-enable-credentials@v0.0.2
         if: ${{ env.ENABLE_CREDENTIALS == 'true' }}
         with:
           namespace: openedx-prod
