@@ -80,11 +80,9 @@ runs:
       shell: bash
       run: |-
         pip install --upgrade pyyaml
-        #echo "TUTOR_ROOT=$GITHUB_WORKSPACE/tutor" >> $GITHUB_ENV
         pip install tutor
         echo "TUTOR_VERSION=$(tutor --version | cut -f3 -d' ')" >> $GITHUB_ENV
         echo tutor root: $(tutor config printroot)
-        echo TUTOR_ROOT: ${TUTOR_ROOT}
 
 
     - name: Configure 3rd Party Authentication
@@ -136,7 +134,7 @@ runs:
       shell: bash
       run:  |-
         tutor config save
-        cat $TUTOR_ROOT/config.yml
+        cat $(tutor config printroot)/config.yml
 
 
     # see: https://github.com/Medality-Health/openedx_devops/blob/main/terraform/modules/kubernetes_secrets/main.tf
