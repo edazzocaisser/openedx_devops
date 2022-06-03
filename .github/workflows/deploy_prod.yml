@@ -32,10 +32,10 @@ jobs:
       ENABLE_NOTES: true
       ENABLE_ECOMMERCE: true
       ENABLE_S3: true
+      ENABLE_CREDENTIALS: true
 
       ENABLE_MFE: false
       ENABLE_BACKUP: false
-      ENABLE_CREDENTIALS: false
 
 
     steps:
@@ -120,6 +120,9 @@ jobs:
           namespace: openedx-prod
           aws-ecr-uri: ${AWS_ECR_REPOSITORY_CREDENTIALS}
           common-logo-url: https://www.edx.org/images/logos/edx-logo-elm.svg
+
+      - name: Dump tutor config.yml
+        uses: ./.github/actions/tutor/print-config
 
       - name: Enable tutor plugin - Xqueue
         uses: openedx-actions/tutor-plugin-enable-xqueue@v0.0.1
