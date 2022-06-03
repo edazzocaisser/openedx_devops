@@ -81,14 +81,3 @@ runs:
       shell: bash
       run:  |-
         tutor k8s init
-
-    - name: Set theme
-      shell: bash
-      run:  |-
-        tutor k8s settheme edx-theme
-
-    - name: Create admin user
-      shell: bash
-      run:  |-
-        $(kubectl get secret admin-edx -n ${{ inputs.namespace }}  -o json | jq  '.data | map_values(@base64d)' |   jq -r 'keys[] as $k | "export \($k|ascii_upcase)=\(.[$k])"')
-        tutor k8s createuser --password "$ADMIN_PASSWORD" --staff --superuser "$ADMIN_USER" admin@mrionline.com

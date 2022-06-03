@@ -165,8 +165,7 @@ jobs:
           namespace: openedx-prod
 
       - name: Dump tutor config
-        uses: ./.github/actions/tutor/print-dump
-
+        uses: openedx-actions/tutor-print-dump@v0.0.1
 
       # ---------------------------------------------------------------------------------
       # Any other misc configuration tasks
@@ -178,16 +177,14 @@ jobs:
                             --set OPENEDX_FACEBOOK_APP_SECRET="${{ inputs.facebook-app-secret }}"
 
       - name: Fetch JWT token
-        uses: openedx-actions/tutor-k8s-configure-jwt@v0.0.1
+        uses: openedx-actions/tutor-k8s-configure-jwt@v0.0.2
         with:
           namespace: openedx-prod
 
 
       # see: https://github.com/Medality-Health/openedx_devops/blob/main/terraform/modules/kubernetes_secrets/main.tf
-      - name: fetch EDX Secret Key from Kubernetes secrets
-        shell: bash
-        run: |-
-          kubectl get secret edx-secret-key -n ${{ inputs.namespace }}  -o json | jq  '.data | map_values(@base64d)' | jq -r 'keys[] as $k | "TUTOR_\($k|ascii_upcase)=\(.[$k])"' >> $GITHUB_ENV
+      - name: Configure edx secret
+        uses: openedx-actions/tutor-k8s-configure-edx-secret@v0.0.1
 
 
       # ---------------------------------------------------------------------------------
@@ -198,3 +195,11 @@ jobs:
         with:
           environment-id: prod
           namespace: openedx-prod
+
+      - name: Set theme
+        shell: bash
+        run:  |-
+          tutor k8s settheme edx-theme
+
+      - name: Create admin user
+        uses: openedx-actions/tutor-k8s-configure-edx-admin@v0.0.1
