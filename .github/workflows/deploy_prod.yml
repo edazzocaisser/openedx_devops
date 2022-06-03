@@ -26,7 +26,7 @@ jobs:
 
       # feature flags for optional tutor modules
       # --------------------------------------------
-      DEBUG_MODE: true
+      DEBUG_MODE: false
       ENABLE_BACKUP: true
       ENABLE_CREDENTIALS: true
       ENABLE_DISCOVERY: true
@@ -222,8 +222,8 @@ jobs:
       # ---------------------------------------------------------------------------------
       # Deploy
       # ---------------------------------------------------------------------------------
-      #- name: Deploy to Kubernetes
-      #  uses: ./.github/actions/tutor/k8s/deploy
-      #  with:
-      #    environment-id: prod
-      #    namespace: openedx-prod
+      - name: Deploy to Kubernetes
+        uses: ./.github/actions/tutor/k8s/deploy
+        with:
+          environment-id: prod
+          namespace: openedx-prod
