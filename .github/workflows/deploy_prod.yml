@@ -48,6 +48,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
 
+      - name: Initialize environment
+        uses: openedx-actions/tutor-k8s-init@v0.0.1
+        with:
+          namespace: openedx-prod
+
       # ---------------------------------------------------------------------------------
       # initialize workflow environment variables
       # ---------------------------------------------------------------------------------
@@ -64,20 +69,22 @@ jobs:
           echo "AWS_ECR_REPOSITORY_MFE=${AWS_ECR_URI}/openedx_mfe:latest" >> $GITHUB_ENV
           echo "AWS_ECR_REPOSITORY_OPENEDX=${AWS_ECR_URI}/openedx:latest" >> $GITHUB_ENV
 
-      # ---------------------------------------------------------------------------------
-      # initialize this Github workspace environment: python, tutor, kubectl, aws cli
-      # ---------------------------------------------------------------------------------
-      - name: Initialize environment
-        uses: ./.github/actions/tutor/k8s/init
-        with:
-          environment-id: prod
-          namespace: openedx-prod
-          openedx-common-version: open-release/maple.3
-          aws-ecr-uri: ${AWS_ECR_REPOSITORY_OPENEDX}
 
-      - name: Dump tutor config
-        if: ${{ env.DEBUG_MODE == 'true' }}
-        uses: ./.github/actions/tutor/print-dump
+      # note that values like $LMS_HOSTNAME come from this repo
+      # in /ci/tutor-deploy/environments/prod/config.yml
+      - name: Load additional environment specific settings
+        shell: bash
+        run: |-
+          echo "TUTOR_LMS_HOST=$LMS_HOSTNAME" >> $GITHUB_ENV
+          echo "TUTOR_CMS_HOST=$CMS_HOSTNAME" >> $GITHUB_ENV
+          echo "TUTOR_DOCKER_IMAGE_OPENEDX=${AWS_ECR_REPOSITORY_OPENEDX}" >> $GITHUB_ENV
+          echo "OPENEDX_COMMON_VERSION=open-release/maple.3" >> $GITHUB_ENV
+
+      - name: Load environment specific settings (direct)
+        shell: bash
+        run: |-
+          # Pin the instalation ID with the Kubernetes namespace. It needs to be unique and static per instalation.
+          cat ci/tutor-deploy/environments/${ENVIRONMENT_ID}/config.yml >> $GITHUB_ENV
 
       # ---------------------------------------------------------------------------------
       # Configure optional tutor plugins
@@ -88,10 +95,6 @@ jobs:
         with:
           namespace: openedx-prod
 
-      - name: Dump tutor config.yml
-        if: ${{ env.DEBUG_MODE == 'true' }}
-        uses: ./.github/actions/tutor/print-config
-
       - name: Enable tutor plugin - Backup
         uses: openedx-actions/tutor-plugin-enable-backup@v0.0.7
         if: ${{ env.ENABLE_BACKUP == 'true' }}
@@ -99,29 +102,17 @@ jobs:
           aws-ecr-uri: ${AWS_ECR_REPOSITORY_BACKUPS}
           namespace: openedx-prod
 
-      - name: Dump tutor config.yml
-        if: ${{ env.DEBUG_MODE == 'true' }}
-        uses: ./.github/actions/tutor/print-config
-
       - name: Enable tutor plugin - Discovery
         uses: openedx-actions/tutor-plugin-enable-discovery@v0.0.1
         if: ${{ env.ENABLE_DISCOVERY == 'true' }}
         with:
           namespace: openedx-prod
 
-      - name: Dump tutor config.yml
-        if: ${{ env.DEBUG_MODE == 'true' }}
-        uses: ./.github/actions/tutor/print-config
-
       - name: Enable tutor plugin - MFE
         uses: openedx-actions/tutor-plugin-enable-mfe@v0.0.1
         if: ${{ env.ENABLE_MFE == 'true' }}
         with:
           aws-ecr-uri: ${AWS_ECR_REPOSITORY_MFE}
-
-      - name: Dump tutor config.yml
-        if: ${{ env.DEBUG_MODE == 'true' }}
-        uses: ./.github/actions/tutor/print-config
 
       - name: Enable tutor plugin - Credentials
         uses: openedx-actions/tutor-plugin-enable-credentials@v0.0.2
@@ -131,19 +122,11 @@ jobs:
           aws-ecr-uri: ${AWS_ECR_REPOSITORY_CREDENTIALS}
           common-logo-url: https://www.edx.org/images/logos/edx-logo-elm.svg
 
-      - name: Dump tutor config.yml
-        if: ${{ env.DEBUG_MODE == 'true' }}
-        uses: ./.github/actions/tutor/print-config
-
       - name: Enable tutor plugin - Xqueue
         uses: openedx-actions/tutor-plugin-enable-xqueue@v0.0.1
         if: ${{ env.ENABLE_XQUEUE == 'true' }}
         with:
           namespace: openedx-prod
-
-      - name: Dump tutor config.yml
-        if: ${{ env.DEBUG_MODE == 'true' }}
-        uses: ./.github/actions/tutor/print-config
 
       - name: Enable tutor plugin - Notes
         uses: openedx-actions/tutor-plugin-enable-notes@v0.0.1
@@ -151,39 +134,15 @@ jobs:
         with:
           namespace: openedx-prod
 
-      - name: Dump tutor config.yml
-        if: ${{ env.DEBUG_MODE == 'true' }}
-        uses: ./.github/actions/tutor/print-config
-
       - name: Enable tutor plugin - Ecommerce
         uses: openedx-actions/tutor-plugin-enable-ecommerce@v0.0.1
         if: ${{ env.ENABLE_ECOMMERCE == 'true' }}
         with:
           namespace: openedx-prod
 
-      - name: Dump tutor config.yml
-        if: ${{ env.DEBUG_MODE == 'true' }}
-        uses: ./.github/actions/tutor/print-config
-
       - name: Enable tutor plugin - Forum
         uses: openedx-actions/tutor-plugin-enable-forum@v0.0.1
         if: ${{ env.ENABLE_FORUM == 'true' }}
-
-      - name: Dump tutor config.yml
-        if: ${{ env.DEBUG_MODE == 'true' }}
-        uses: ./.github/actions/tutor/print-config
-
-
-      # ---------------------------------------------------------------------------------
-      # Configure URIs for Docker containers stored in AWS ECR
-      # ---------------------------------------------------------------------------------
-
-      - name: Set Docker container URI's
-        shell: bash
-        run: |-
-          tutor config save --set MFE_DOCKER_IMAGE=${AWS_ECR_REPOSITORY_MFE} \
-                            --set BACKUP_DOCKER_IMAGE=${AWS_ECR_REPOSITORY_BACKUP} \
-                            --set CREDENTIALS_DOCKER_IMAGE=${AWS_ECR_REPOSITORY_CREDENTIALS} \
 
       # ---------------------------------------------------------------------------------
       # Configure backend services
@@ -195,28 +154,40 @@ jobs:
           aws-ses-iam-secret: ${{ secrets.aws-ses-iam-secret }}
           aws-region: us-east-2
 
-      - name: Dump tutor config.yml
-        if: ${{ env.DEBUG_MODE == 'true' }}
-        uses: ./.github/actions/tutor/print-config
-
       - name: Configure Redis
         uses: openedx-actions/tutor-service-configure-redis@v0.0.2
         with:
           namespace: openedx-prod
 
-      - name: Dump tutor config.yml
-        if: ${{ env.DEBUG_MODE == 'true' }}
-        uses: ./.github/actions/tutor/print-config
-
       - name: Configure MySQL
-        uses: openedx-actions/tutor-service-configure-mysql@v0.0.2
+        uses: openedx-actions/tutor-service-configure-mysql@v0.0.3
         with:
           namespace: openedx-prod
 
       - name: Dump tutor config
-        if: ${{ env.DEBUG_MODE == 'true' }}
         uses: ./.github/actions/tutor/print-dump
 
+
+      # ---------------------------------------------------------------------------------
+      # Any other misc configuration tasks
+      # ---------------------------------------------------------------------------------
+      - name: Configure 3rd Party Authentication
+        shell: bash
+        run:  |-
+          tutor config save --set OPENEDX_FACEBOOK_APP_ID="${{ inputs.facebook-app-id }}" \
+                            --set OPENEDX_FACEBOOK_APP_SECRET="${{ inputs.facebook-app-secret }}"
+
+      - name: Fetch JWT token
+        uses: openedx-actions/tutor-k8s-configure-jwt@v0.0.1
+        with:
+          namespace: openedx-prod
+
+
+      # see: https://github.com/Medality-Health/openedx_devops/blob/main/terraform/modules/kubernetes_secrets/main.tf
+      - name: fetch EDX Secret Key from Kubernetes secrets
+        shell: bash
+        run: |-
+          kubectl get secret edx-secret-key -n ${{ inputs.namespace }}  -o json | jq  '.data | map_values(@base64d)' | jq -r 'keys[] as $k | "TUTOR_\($k|ascii_upcase)=\(.[$k])"' >> $GITHUB_ENV
 
 
       # ---------------------------------------------------------------------------------
