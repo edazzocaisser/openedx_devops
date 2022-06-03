@@ -31,8 +31,8 @@ jobs:
       ENABLE_XQUEUE: true
       ENABLE_NOTES: true
       ENABLE_ECOMMERCE: true
+      ENABLE_S3: true
 
-      ENABLE_S3: false
       ENABLE_MFE: false
       ENABLE_BACKUP: false
       ENABLE_CREDENTIALS: false
