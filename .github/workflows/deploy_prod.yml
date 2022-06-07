@@ -28,7 +28,7 @@ jobs:
       # --------------------------------------------
       DEBUG_MODE: false
       ENABLE_BACKUP: true
-      ENABLE_CREDENTIALS: true
+      ENABLE_CREDENTIALS: false
       ENABLE_DISCOVERY: true
       ENABLE_ECOMMERCE: true
       ENABLE_FORUM: true
